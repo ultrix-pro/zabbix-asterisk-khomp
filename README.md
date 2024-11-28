@@ -1,72 +1,72 @@
 # Monitoramento do Asterisk e Khomp EBS através do Zabbix com SNMP
 
-Templates Zabbix para monitoramento SNMP do Asterisk e Khomp EBS
-Mantenedor: Igor Silva
-E-mail: igor@ultrix.pro 
-Estado: Finalizado
-Data: 20240819
+Templates Zabbix para monitoramento SNMP do Asterisk e Khomp EBS  
+Mantenedor: Igor Silva  
+E-mail: igor@ultrix.pro   
+Estado: Finalizado  
+Data: 20240819  
 
-(c) Copyright 2024, Ultrix
+(c) Copyright 2024, Ultrix  
 
 # Introdução
 O template para monitoramento do Khomp EBS foi criado a partir dos seguintes manuais, fornecidos pela Khomp:
 
-**KQueryServer - Manual do usuario
-Última atualização: 2022-12-21 16:51:47**
+**KQueryServer - Manual do usuario  
+Última atualização: 2022-12-21 16:51:47**  
 
-**Códigos de Descrição e Estado da K3L
-Última atualização: 2023-05-31 19:55:41**
+**Códigos de Descrição e Estado da K3L  
+Última atualização: 2023-05-31 19:55:41**  
 
-Para fazer o monitoramento via SNMP **Asterisk** e **Khomp** na sua máquina disponibilizamos dois Templates Zabbix (TemplateAsterisk.json, TemplateKhomp.json) , para utiliza-los é necessário:
+Para fazer o monitoramento via SNMP **Asterisk** e **Khomp** na sua máquina disponibilizamos dois Templates Zabbix (TemplateAsterisk.json, TemplateKhomp.json) , para utiliza-los é necessário:  
   
 - Instalação do SNMP  
-   - Configuração do SNMP
-   - Configuração do SNMP Asterisk
-- MIBS Khomp - Asterisk
-   - Acesso as MIBS
-- Configuração do Zabbix  
-   - Hosts
-   - Templates
+   - Configuração do SNMP  
+   - Configuração do SNMP Asterisk  
+- MIBS Khomp - Asterisk  
+   - Acesso as MIBS  
+- Configuração do Zabbix    
+   - Hosts  
+   - Templates  
 
     
 ## Instalação do SNMP
 
 **Configuração do SNMP**
 
-O processo de instalação do SNMP e suas ferramentas no seu sistema varia de acordo com o sistema operacional que você está usando.
+O processo de instalação do SNMP e suas ferramentas no seu sistema varia de acordo com o sistema operacional que você está usando.  
 
 **SUSE/OpenSUSE**:
-instala os pacotes necessários para SNMP e suas ferramentas
+instala os pacotes necessários para SNMP e suas ferramentas  
 
-`sudo zypper install net-snmp net-snmp-utils`
+`sudo zypper install net-snmp net-snmp-utils`  
 
 **Configuração SNMP**
 
-Para realizar o processo de configuração, siga os passos abaixo:
+Para realizar o processo de configuração, siga os passos abaixo:   
 
-Entre no diretório de configuração do SNMP:
+Entre no diretório de configuração do SNMP:  
     
- `cd /etc/snmp`
+ `cd /etc/snmp`  
   
 
-Abra o arquivo de configuração `snmpd.conf` com o editor `vim`:
+Abra o arquivo de configuração `snmpd.conf` com o editor `vim`:  
 
   
- `vim snmpd.conf`
+ `vim snmpd.conf`  
   
 
-Para iniciar o processo:
-inicia o serviço SNMP
+Para iniciar o processo:  
+inicia o serviço SNMP  
 
-`sudo systemctl start snmpd`
+`sudo systemctl start snmpd`  
                  
-configura o serviço SNMP para iniciar automaticamente durante a inicialização do sistema
+configura o serviço SNMP para iniciar automaticamente durante a inicialização do sistema  
 
-`sudo systemctl enable snmpd`
+`sudo systemctl enable snmpd`  
              
 
-Adicione ou modifique as seguintes linhas no arquivo `snmpd.conf`:
-``` conf
+Adicione ou modifique as seguintes linhas no arquivo `snmpd.conf`:  
+``` conf  
     com2sec readonly  172.28.17.7 public
                      # define a comunidade e o endereço IP para leitura
 
