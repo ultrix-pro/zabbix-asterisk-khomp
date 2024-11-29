@@ -1,0 +1,1318 @@
+zabbix_export:
+  version: '6.0'
+  date: '2024-11-29T18:44:30Z'
+  groups:
+    -
+      uuid: 310b72d6dde349619546794251c620ab
+      name: 'UTX Templates'
+  templates:
+    -
+      uuid: 91ece6d879ed47d88c92ecbe067a2a09
+      template: 'TPL Khomp'
+      name: 'TPL Khomp'
+      groups:
+        -
+          name: 'UTX Templates'
+      items:
+        -
+          uuid: 185437559f4a4d399d2c3ed208be6bb4
+          name: ConfigurationR2Country
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lConfigurationR2Country.0'
+          key: k3lConfigurationR2Country
+          delay: 5m
+          trends: '0'
+          value_type: TEXT
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+        -
+          uuid: 634dbfb8acf64a609ddea7b3f7c206a5
+          name: ConsolidatedDevicesChannelCount
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lConsolidatedDevicesChannelCount.0'
+          key: k3lConsolidatedDevicesChannelCount
+          delay: 5m
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+        -
+          uuid: d81d6a8bb17d4811b7ae0a00c8f4f3ad
+          name: ConsolidatedDevicesChannelCountBusy
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lConsolidatedDevicesChannelCountBusy.0'
+          key: k3lConsolidatedDevicesChannelCountBusy
+          delay: 5m
+          value_type: FLOAT
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+        -
+          uuid: 9da59da4f84b43b48cf4fec7a06a3c97
+          name: ConsolidatedDevicesChannelCountEnabled
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lConsolidatedDevicesChannelCountEnabled.0'
+          key: k3lConsolidatedDevicesChannelCountEnabled
+          delay: 5m
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+        -
+          uuid: 571f22a20a2b43038144b9749bcca60a
+          name: ConsolidatedDevicesChannelCountFail
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lConsolidatedDevicesChannelCountFail.0'
+          key: k3lConsolidatedDevicesChannelCountFail
+          delay: 5m
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+        -
+          uuid: 457b90a6e23e4853b15deaaa5fd9c3f3
+          name: ConsolidatedDevicesChannelCountIdle
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lConsolidatedDevicesChannelCountIdle.0'
+          key: k3lConsolidatedDevicesChannelCountIdle
+          delay: 5m
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+        -
+          uuid: e627a4216f914d8aab98facf3fabf2b4
+          name: DeviceCount
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lDeviceCount.0'
+          key: k3lDeviceCount
+          delay: 5m
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+        -
+          uuid: 4d49c17c02d743879167b3ea9e9e0ea5
+          name: VersionStringAPI
+          type: SNMP_AGENT
+          snmp_oid: 'KHOMP-MIB::k3lVersionString.0'
+          key: k3lVersionString
+          delay: 5m
+          trends: '0'
+          value_type: TEXT
+          tags:
+            -
+              tag: Khomp
+              value: Operação
+      discovery_rules:
+        -
+          uuid: a53e5876ed3745ec9f80c2ccf3e2196e
+          name: DeviceChannelGroup
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},KHOMP-MIB::k3lDeviceChannelGroupChannelFail]'
+          key: k3lDeviceChannelGroup
+          delay: 5m
+          item_prototypes:
+            -
+              uuid: e89f9a3eb3294e5cb3f8cfe6554735a1
+              name: 'DeviceChannelGroupChannelBusy {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelGroupChannelBusy.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelGroupChannelBusy[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              tags:
+                -
+                  tag: Khomp
+                  value: ChannelGroup
+            -
+              uuid: 9f1bf2fa1bc54d108d759e7b63b5301a
+              name: 'DeviceChannelGroupChannelCount {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelGroupChannelCount.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelGroupChannelCount[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              tags:
+                -
+                  tag: Khomp
+                  value: ChannelGroup
+            -
+              uuid: 97c24f23ea0b4c0fbfe02149cc2328de
+              name: 'DeviceChannelGroupChannelFail {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelGroupChannelFail.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelGroupChannelFail[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              tags:
+                -
+                  tag: Khomp
+                  value: ChannelGroup
+            -
+              uuid: dbaada1292a34e85b2114a3af2a8b451
+              name: 'DeviceChannelGroupChannelIdle {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelGroupChannelIdle.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelGroupChannelIdle[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              tags:
+                -
+                  tag: Khomp
+                  value: ChannelGroup
+            -
+              uuid: a8368b1e083e4d3bbf0bb575aaa878df
+              name: 'DeviceChannelGroupFirstChannel {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelGroupFirstChannel.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelGroupFirstChannel[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              tags:
+                -
+                  tag: Khomp
+                  value: ChannelGroup
+            -
+              uuid: 1c40b7ecb5cd4cd1b8b61575b06d5479
+              name: 'DeviceChannelGroupType {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelGroupType.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelGroupType[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              tags:
+                -
+                  tag: Khomp
+                  value: ChannelGroup
+        -
+          uuid: 3a684e9cd7ad4625b8f55ab5c5fc5736
+          name: DeviceChannelSignaling
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},KHOMP-MIB::k3lDeviceChannelSignaling]'
+          key: k3lDeviceChannelSignaling
+          delay: 5m
+          item_prototypes:
+            -
+              uuid: aea3d7ddc7f64e25947d3aeba16eb509
+              name: 'DeviceChannelAudioStatus {#SNMPVALUE} {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelAudioStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelAudioStatus.[{#SNMPINDEX}]'
+              delay: 5m
+              value_type: FLOAT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: ca16e5e734e84de18cd186a6b36bcf9d
+              name: 'DeviceChannelAverageCallTime {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelAverageCallTime.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelAverageCallTime.[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: 880415cac53d492fbb76b02a55eefec0
+              name: 'DeviceChannelCadenceStatus {#SNMPVALUE} {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCadenceStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelCadenceStatus.[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: b47ed2eaa3b34b23a64574f80bdca2f3
+              name: 'DeviceChannelCallDuration {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCallDuration.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelCallDuration.[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: f36f558946444a09a29752c031526cec
+              name: 'DeviceChannelCallStatus {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCallStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelCallStatus.[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: 2f568d1522474ac8b5ae28bcd5e5a7ae
+              name: 'DeviceChannelDestinationAddress {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelDestinationAddress.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelDestinationAddress.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: 0938ea5151b547d896e199055edd99bc
+              name: 'DeviceChannelEnabledFeatures {#SNMPVALUE} {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelEnabledFeatures.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelEnabledFeatures.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: e9f948df2fde4b43ba2ef1a95e792bf4
+              name: 'DeviceChannelOriginAddress {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelOriginAddress.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelOriginAddress.[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: 96d924562de247ed930985123fbea543
+              name: 'DeviceChannelRecording {#SNMPVALUE} {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelRecording.{#SNMPINDEX}'
+              key: 'k3lDeviceChannelRecording.[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+            -
+              uuid: 18f00eacadf74c71a3c54cc815853c61
+              name: 'DeviceE1ChannelStatus {#SNMPVALUE} {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceE1ChannelStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceE1ChannelStatus.[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannel
+        -
+          uuid: ff2e3822493d4306b027c5b0b0e6609d
+          name: DeviceFXO
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},KHOMP-MIB::k3lDeviceFxoChannelStatus]'
+          key: k3lDeviceFxo
+          delay: 5m
+          item_prototypes:
+            -
+              uuid: c9c0f6362c1743258cb934c823b4d8e3
+              name: 'DeviceFxoChannelStatus {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceFxoChannelStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceFxoChannelStatus.[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceFXO
+        -
+          uuid: ad20e52979dd491ab0f522e502fb409f
+          name: DeviceGSM
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},KHOMP-MIB::k3lDeviceGsmChannelErrorRate]'
+          key: k3lDeviceGsm
+          delay: 5m
+          item_prototypes:
+            -
+              uuid: 0eab37b8e8994aeb85926b6dfa10ef53
+              name: 'DeviceGsmChannelCallWaiting {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelCallWaiting.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelCallWaiting[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 4b1782d4c54a4ec09a729337d603370f
+              name: 'DeviceGsmChannelEnabledFeatures (GSM) {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelEnabledFeatures.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelEnabledFeatures[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 2cd41bc4b51c433e8b59be39a6ba1748
+              name: 'DeviceGsmChannelErrorRate {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelErrorRate.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelErrorRate[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 973d5ef4b2be4cb783c3d57c0446f15c
+              name: 'DeviceGsmChannelIccid  {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelIccid.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelIccid[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 74714277dbd84fdc9820163e748d191b
+              name: 'DeviceGsmChannelImei  {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelImei.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelImei[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 5e95292c2cd64c488b5e8174ffde2f9f
+              name: 'DeviceGsmChannelImsi {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelImsi.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelImsi[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 5a49672bb0be48a7a709b7a7e930f9b1
+              name: 'DeviceGsmChannelMsisdn  {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelMsisdn.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelMsisdn[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 4f0c7c0cda4048a9bf8bb900687ea4ae
+              name: 'DeviceGsmChannelOperName {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelOperName.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelOperName[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: ec177906a272485eb83a7782eeaee843
+              name: 'DeviceGsmChannelRegistryStatus {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelRegistryStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelRegistryStatus[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 46c0621779d14d71bb6b0d103ba6602a
+              name: 'DeviceGsmChannelSignalStrength {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelSignalStrength.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelSignalStrength[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 4d7bd9f00e93425194bc3f02e2b33d91
+              name: 'DeviceGsmChannelSimCardCount {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelSimCardCount.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelSimCardCount[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: b0574b537c904066b00f05b27ad58c0d
+              name: 'DeviceGsmChannelSim {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelSim.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelSim[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 034940138c0445cea58e947bcbf0e734
+              name: 'DeviceGsmChannelUnreadSmsMessages {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelUnreadSmsMessages.{#SNMPINDEX}'
+              key: 'k3lDeviceGsmChannelUnreadSmsMessages[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+        -
+          uuid: 8a39fb3736604d78a42f3205e984c929
+          name: DeviceHILink
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},KHOMP-MIB::k3lDeviceHILinkOperStatus]'
+          key: k3lDeviceHILink
+          delay: 5m
+          item_prototypes:
+            -
+              uuid: 69650dce804c49df8d8f054af1899136
+              name: 'DeviceHILinkAlarm {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceHILinkAlarm.{#SNMPINDEX}'
+              key: 'k3lDeviceHILinkAlarm[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceHILink
+            -
+              uuid: 2e1027c50d604b5f84bb2d34384d082f
+              name: 'DeviceHILinkOperStatus {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceHILinkOperStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceHILinkOperStatus[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceHILink
+        -
+          uuid: 9f12989822ac4c7d9609dec15334ef7e
+          name: DeviceLink
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},KHOMP-MIB::k3lDeviceLinkSignaling]'
+          key: k3lDeviceLink
+          delay: 5m
+          item_prototypes:
+            -
+              uuid: b426a2f3b7e94debbe59c1ca3cd54ccc
+              name: 'DeviceLinkAlarm {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkAlarm.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkAlarm[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+              trigger_prototypes:
+                -
+                  uuid: 2670450b73df4bc3be4a39eb4bd6052b
+                  expression: 'last(/TPL Khomp/k3lDeviceLinkAlarm[{#SNMPINDEX}])>0'
+                  recovery_mode: NONE
+                  name: 'Status do Link Alarm: Maior que 0'
+                  priority: HIGH
+            -
+              uuid: 163879d91d05451b8ca8a2d8b8aecc0d
+              name: 'DeviceLinkCallFailNoAnswer {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailNoAnswer.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallCallFailNoAnswer[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: c223f4e10aef4cbfa4eb79a7d14def0b
+              name: 'DeviceLinkCallFailRejected {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailRejected.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallCallFailRejected[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: eda6bc721361482fad3adba143a4b4eb
+              name: 'DeviceLinkCallFailBusy {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailBusy.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallFailBusy[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 51effef676884896b92bcc536afab495
+              name: 'DeviceLinkCallFailChangedNumber {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailChangedNumber.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallFailChangedNumber[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: f69b9ccbaa184f09b8d7b79ce583c57b
+              name: 'DeviceLinkCallFailCongestion {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailCongestion.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallFailCongestion[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 6c7835549bb34affa1c88571381b8366
+              name: 'DeviceLinkCallFailInvalidNumber {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailInvalidNumber.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallFailInvalidNumber[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: fc06917846a64afd8dc2fab2e0e04a22
+              name: 'DeviceLinkCallFailNetworkFailure {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailNetworkFailure.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallFailNetworkFailure[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 37e361907a2547aaa3796ba4d79be443
+              name: 'DeviceLinkCallFailOther {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCallFailOther.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkCallFailOther[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 949cc18102ef43c0b3628574f20f5226
+              name: 'DeviceLinkChannelCountEnabled {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkChannelCountEnabled.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkChannelCountEnabled[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 4e7d244b276a47559a878cf773c65679
+              name: 'DeviceLinkChannelCountFail {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkChannelCountFail.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkChannelCountFail[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: e816a7e254a542b4aa86e817af1ef01e
+              name: 'DeviceLinkChannelCountIdle {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkChannelCountIdle.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkChannelCountIdle[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: a7f92b2c27ac4db4a587b5ca2d06d5f4
+              name: 'DeviceLinkChannelCount {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkChannelCount.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkChannelCout[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: ce425dd654ac4711a6ac35897fe62fff
+              name: 'DeviceLinkDescr {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkDescr.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkDescr[{#SNMPINDEX}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 15b87d2c1f714fb08989d09e3194e383
+              name: 'DeviceLinkErrorCountAlarmNotification {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountAlarmNotification.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountAlarmNotification[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: b665276b84fb499e9e5b431357d185d3
+              name: 'DeviceLinkErrorCountBipolarViolation {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountBipolarViolation.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountBipolarViolation[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 4ce850746b414d59b5b34f218f5ef1f2
+              name: 'DeviceLinkErrorCountChangesToLock {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountChangesToLock.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountChangesToLock[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 88fb909fb733421d958fbc3c11a7b38a
+              name: 'DeviceLinkErrorCountCRC4 {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountCRC4.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountCRC4[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 44ff72a013464e7c865c8223889f9ba2
+              name: 'DeviceLinkErrorCountFrameError {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountFrameError.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountFrameError[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: b5f9d519d1154cc4a5cc3f4a27c7bda8
+              name: 'DeviceLinkErrorCountFramesWithoutSync {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountFramesWithoutSync.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountFramesWithoutSync[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: a13d60207e0141dc98a25d8307123428
+              name: 'DeviceLinkErrorCountJitterVariation {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountJitterVariation.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountJitterVariation[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 99ebbd28c1da4373b7af24891f10591e
+              name: 'DeviceLinkErrorCountLostOfFrame {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountLostOfFrame.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountLostOfFrame[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: b9e7a51c67614aa8b6764428311b27d6
+              name: 'DeviceLinkErrorCountLostOfMultiframe {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountLostOfMultiframe.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountLostOfMultiframe[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: afff3c05149a42e1accf6ea60fd168de
+              name: 'DeviceLinkErrorCountLostOfSignal {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountLostOfSignal.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountLostOfSignal[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 530427f89567424697c3ca01410a9975
+              name: 'DeviceLinkErrorCountMultiframeSignal {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountMultiframeSignal.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountMultiframeSignal[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: e19e3e65c5c6421cb84eb92a46b83163
+              name: 'DeviceLinkErrorCountPRBS {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountPRBS.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountPRBS[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 229e28e4157643fba9cd5d097a723d09
+              name: 'DeviceLinkErrorCountRemoteAlarm {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountRemoteAlarm.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountRemoteAlarm[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 7e4a4d8d84844547a6b936c423b4e7a2
+              name: 'DeviceLinkbErrorCountWrongEBits{#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountWrongEBits.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorCountWrongEBits[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: c893b14640c845f2a6c6069af222d37a
+              name: 'DeviceLinkErrorErrorCountSlipAlarm{#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkErrorCountSlipAlarm.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkErrorErrorCountSlipAlarm[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 925f92012c454cb2a3b23a6f949dc1ec
+              name: 'DeviceLinkLocalDisconnect {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkLocalDisconnect.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkLocalDisconnect[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: dfd91544eec746c0aa317d39bcb09845
+              name: 'DeviceLinkOperatingMode {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkOperatingMode.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkOperatingMode[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: e1bcb92fe62644b19c74e8726048e2b8
+              name: 'DeviceLinkOperStatus {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkOperStatus.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkOperStatus[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+              trigger_prototypes:
+                -
+                  uuid: 41ff98d0cf9a4f499b88544f83cd1c4c
+                  expression: 'last(/TPL Khomp/k3lDeviceLinkOperStatus[{#SNMPINDEX}])=0'
+                  recovery_mode: RECOVERY_EXPRESSION
+                  recovery_expression: 'last(/TPL Khomp/k3lDeviceLinkOperStatus[{#SNMPINDEX}])=1'
+                  name: 'Status do Link Operacional Down'
+                  priority: HIGH
+            -
+              uuid: e87418854c01448f8288e9bd031b5a76
+              name: 'DeviceLinkReceivingClock {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkReceivingClock.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkReceivingClock[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 7a972ac42f314441ab64ec73ecae3908
+              name: 'DeviceLinkSignaling {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkSignaling.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkSignaling[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: be34868b22034dc09937e700591e24aa
+              name: 'DeviceLinkStatsIncoming {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkStatsIncoming.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkStatsIncomming[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 781723936bed4b7388233c3c4a99f000
+              name: 'DeviceLinkStatsOutgoingError {#SNMPINDEX}'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkOutgoingError.{#SNMPINDEX}'
+              key: 'k3lDeviceLinkStatsOutgoingError[{#SNMPINDEX}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+        -
+          uuid: db84e2aee64b4716b07d4af6be52fc7b
+          name: DeviceSerial
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},KHOMP-MIB::k3lDeviceSerial]'
+          key: k3lDeviceSerial
+          delay: 5m
+          item_prototypes:
+            -
+              uuid: 96f8529a8b744fe08d21ddb2aa10186a
+              name: 'DeviceCallFailBusy [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailBusy.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailBusy[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: 987280979409409ead9b2f73efcba170
+              name: 'DeviceCallFailChangedNumber [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailChangedNumber.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailChangedNumber[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: d914647a1e5a43dfb6c1e357eaf23134
+              name: 'DeviceCallFailCongestion [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailCongestion.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailCongestion[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: 842476294f4a4c9d9397a92f3feaa65c
+              name: 'DeviceCallFailInvalidNumber [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailInvalidNumber.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailInvalidNumber[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: 81e1d2a65eb844bc90423484f45ec5fa
+              name: 'DeviceCallFailNetworkFailure [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailNetworkFailure.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailNetworkFailure[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: 4e950ba215274f1198978804c824db1f
+              name: 'DeviceCallFailNoAnswer [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailNoAnswer.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailNoAnswer[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: ad6652f5f06742ac8218f77b111ba147
+              name: 'DeviceCallFailOutOfService [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailOutOfService.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailOutOfService[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: b9579f3d7dad4159ba043115376a571b
+              name: 'DeviceCallFailRejected [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceCallFailRejected.{#SNMPVALUE}'
+              key: 'k3lDeviceCallFailRejected[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceCall
+            -
+              uuid: 4d99f26e75b14a30b62f74172cbd742c
+              name: 'DeviceChannelCountBusy [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCountBusy.{#SNMPVALUE}'
+              key: 'k3lDeviceChannelCountBusy[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannelCount
+            -
+              uuid: ae04d9404f4044dabd6d7ef3be6bd224
+              name: 'DeviceChannelCountEnabled [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCountEnabled.{#SNMPVALUE}'
+              key: 'k3lDeviceChannelCountEnabled[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannelCount
+            -
+              uuid: 1077f793acec4e90a6530146837735c2
+              name: 'DeviceChannelCountFail [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCountFail.{#SNMPVALUE}'
+              key: 'k3lDeviceChannelCountFail[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannelCount
+            -
+              uuid: 9a6c4e87a82a47dbabf29c461520da9a
+              name: 'DeviceChannelCountIdle [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCountIdle.{#SNMPVALUE}'
+              key: 'k3lDeviceChannelCountIdle[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannelCount
+            -
+              uuid: 4ca47c67e4bb4501b482d944f81c2ee0
+              name: 'DeviceChannelCount [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceChannelCount.{#SNMPVALUE}'
+              key: 'k3lDeviceChannelCount[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceChannelCount
+            -
+              uuid: 7abe7959f7a54cfe9b79da7e125574bd
+              name: 'DeviceDescr [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceDescr.{#SNMPVALUE}'
+              key: 'k3lDeviceDescr[{#SNMPVALUE}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: aef1e9252b8d459babae38f6efbf2e51
+              name: 'DeviceEbsIP [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceEbsIP.{#SNMPVALUE}'
+              key: 'k3lDeviceEbsIP[{#SNMPVALUE}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: 132309d7c5c046d68db2f1c42308f0d4
+              name: 'DeviceGsmChannelCount [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceGsmChannelCount.{#SNMPVALUE}'
+              key: 'k3lDeviceGsmChannelCount[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceGSM
+            -
+              uuid: 27ea1b0d53b14bf38724a927b2420f9f
+              name: 'DeviceLinkCount [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLinkCount.{#SNMPVALUE}'
+              key: 'k3lDeviceLinkCount[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceLink
+            -
+              uuid: 415a1dc14a2c49398d9e50105c09efdd
+              name: 'DeviceLocalDisconnect [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceLocalDisconnect.{#SNMPVALUE}'
+              key: 'k3lDeviceLocalDisconnect[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: 3d96d8bf2ba24e6499946f9027702cc1
+              name: 'DeviceModel [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceModel.{#SNMPVALUE}'
+              key: 'k3lDeviceModel[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: d25f342497994a4182033256e78fc981
+              name: 'DeviceOperStatus [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceOperStatus.{#SNMPVALUE}'
+              key: 'k3lDeviceOperStatus[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: 516c0c065a254c5589e53d8949932250
+              name: 'DeviceOutgoingCompleted [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceOutgoingCompleted.{#SNMPVALUE}'
+              key: 'k3lDeviceOutgoingCompleted[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: b478295c0d254742a064a26c21d60fb6
+              name: 'DeviceOutgoingError [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceOutgoingError.{#SNMPVALUE}'
+              key: 'k3lDeviceOutgoingError[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: 460f93fb81414a3eb1778ff088d0e1f5
+              name: 'DeviceRemoteDisconnect [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceRemoteDisconnect.{#SNMPVALUE}'
+              key: 'k3lDeviceRemoteDisconnect[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: 6445f0f26dc14f0da2cb9e731e9bd020
+              name: 'DeviceSerial [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceSerial.{#SNMPVALUE}'
+              key: 'k3lDeviceSerial[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: 375254797b9b4284b69fa1a25f68e547
+              name: 'DeviceSipChannelCount [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceSipChannelCount.{#SNMPVALUE}'
+              key: 'k3lDeviceSipChannelCount[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: 40d77fe56a834fe49b992657a390b696
+              name: 'DeviceStatsIncoming [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceStatsIncoming.{#SNMPVALUE}'
+              key: 'k3lDeviceStatsIncoming[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: c196e57717f54129b5670dc724f8900e
+              name: 'DeviceStatsOutgoing [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceStatsOutgoing.{#SNMPVALUE}'
+              key: 'k3lDeviceStatsOutgoing[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: b9f177aa77fa4618be16c6736e863cc7
+              name: 'DeviceType [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceType.{#SNMPVALUE}'
+              key: 'k3lDeviceType[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: Dispositivos
+            -
+              uuid: d7dcac0551ee416bb3f83842860f9d43
+              name: 'DeviceVoipProfileLocalAddress  [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceVoipProfileLocalAddress.{#SNMPVALUE}'
+              key: 'k3lDeviceVoipProfileLocalAddress[{#SNMPVALUE}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceVoip
+            -
+              uuid: 8f1ead03e7f842cf8707bf5a83cdbbb9
+              name: 'DeviceVoipProfileLocalPort [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceVoipProfileLocalPort.{#SNMPVALUE}'
+              key: 'k3lDeviceVoipProfileLocalPort[{#SNMPVALUE}]'
+              delay: 5m
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceVoip
+            -
+              uuid: 57d85fd5673c4fd187f0f4d04106dc08
+              name: 'DeviceVoipProfileRTPAddress [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceVoipProfileRTPAddress.{#SNMPVALUE}'
+              key: 'k3lDeviceVoipProfileRTPAddress[{#SNMPVALUE}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceVoip
+            -
+              uuid: b5adae4d2fde4db9b3c9bbf0214177df
+              name: 'DeviceVoipProfileTransportType [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: 'KHOMP-MIB::k3lDeviceVoipProfileTransportType.{#SNMPVALUE}'
+              key: 'k3lDeviceVoipProfileTransportType[{#SNMPVALUE}]'
+              delay: 5m
+              trends: '0'
+              value_type: TEXT
+              tags:
+                -
+                  tag: Khomp
+                  value: DeviceVoip
