@@ -1,0 +1,2736 @@
+KHOMP-MIB DEFINITIONS ::= BEGIN
+  IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, enterprises, Unsigned32, Gauge32, Counter32
+      FROM SNMPv2-SMI
+    DisplayString, TEXTUAL-CONVENTION
+      FROM SNMPv2-TC
+    OBJECT-GROUP, MODULE-COMPLIANCE
+      FROM SNMPv2-CONF;
+
+--      {iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) khomp(32624)}
+
+khomp MODULE-IDENTITY
+  LAST-UPDATED  "201605271929Z"
+  ORGANIZATION  "Khomp Ind. e Com. Ltda."
+  CONTACT-INFO
+    "Sergio Surkamp
+     Development - Khomp Ltda.
+
+     E-mail: sergio@khomp.com"
+
+  DESCRIPTION
+    "Khomp MIB definition to be used with kqueryserver"
+
+  REVISION     "201605271929Z"
+  DESCRIPTION  "Cadence status added"  
+
+  REVISION     "201510201453Z"
+  DESCRIPTION  "GSM SIM card count and voip informations added"
+
+  REVISION     "201505210330Z"
+  DESCRIPTION  "GSM Call Waiting Status added"
+
+  REVISION     "201502041701Z"
+  DESCRIPTION  "Channel call statistics, GSM information, EbsIP and R2Country added (issue #10196)"
+
+  REVISION     "201412291048Z"
+  DESCRIPTION  "Link/Device Statistics added"
+
+  REVISION     "201412031109Z"
+  DESCRIPTION  "Data channel group OID added"
+
+  REVISION     "201412011412Z"
+  DESCRIPTION  "Data consolidated devices OID added"
+
+  REVISION     "201411171500Z"
+  DESCRIPTION  "k3lDeviceSerial OID access level changed from not accessible to ready-only"
+
+  REVISION     "201410091545Z"
+  DESCRIPTION  "Device link channel status counter OIDs added (issue #9648)"
+
+  REVISION     "201309252100Z"
+  DESCRIPTION  "Initial version"
+
+  ::= { enterprises 32624 }
+
+--
+-- TEXTUAL CONVENTIONS
+--
+
+KhompSignaling ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Supported signaling"
+  SYNTAX       INTEGER {
+                 ksigInactive(0),
+                 ksigR2Digital(1),
+                 ksigContinuousEM(2),
+                 ksigPulsedEM(3),
+                 ksigUserR2Digital(4),
+                 ksigAnalog(5),
+                 ksigOpenCAS(6),
+                 ksigOpenR2(7),
+                 ksigSIP(8),
+                 ksigOpenCCS(9),
+                 ksigPRIEndPoint(10),
+                 ksigAnalogTerminal(11),
+                 ksigPRINetwork(12),
+                 ksigPRIPassive(13),
+                 ksigLineSide(14),
+                 ksigCASEL7(15),
+                 ksigGSM(16),
+                 ksigE1LC(17),
+                 ksigISUP(18),
+                 ksigISUPPassive(19)
+               }
+
+KhompOperStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Valid operational status"
+  SYNTAX       INTEGER {
+                 down(0),
+                 up(1)
+               }
+
+KhompBoolean ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Boolean"
+  SYNTAX       INTEGER {
+                 false(0),
+                 true(1)
+               }
+
+--KhompBitmask ::= TEXTUAL-CONVENTION
+--  STATUS       current
+--  DESCRIPTION  "Bit masks"
+--  SYNTAX       Integer32
+
+KhompDeviceIndex ::= TEXTUAL-CONVENTION
+  DISPLAY-HINT "d"
+  STATUS       current
+  DESCRIPTION  "K3L device index"
+  SYNTAX       Unsigned32 (0..98)
+
+KhompDeviceSerial ::= TEXTUAL-CONVENTION
+  DISPLAY-HINT "d"
+  STATUS       current
+  DESCRIPTION  "Khomp device serial number"
+  SYNTAX       Unsigned32 (99..65535)
+
+KhompUnsigned16 ::= TEXTUAL-CONVENTION
+  DISPLAY-HINT "d"
+  STATUS       current
+  DESCRIPTION  "Khomp 16bits unsigned integer"
+  SYNTAX       Unsigned32 (0..65535)
+
+KhompDeviceType ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Valid device types"
+  SYNTAX       INTEGER {
+                 kdtE1(0),
+                 kdtFXO(1),
+                 kdtConf(2),
+                 kdtPR(3),
+                 kdtE1GW(4),
+                 kdtFXOVoIP(5),
+                 kdtE1IP(6),
+                 kdtE1Spx(7),
+                 kdtGWIP(8),
+                 kdtFXS(9),
+                 kdtFXSSpx(10),
+                 kdtGSM(11),
+                 kdtGSMSpx(12),
+                 kdtE1AdHoc(13),
+                 kdtGSMUSB(14),
+                 kdtGSMUSBSpx(15),
+                 kdtE1FXSSpx(16),
+                 kdtVoIP(17),
+                 kdtEBSE1(18),
+                 kdtEBSFXO(19),
+                 kdtEBSFXS(20),
+                 kdtEBSGSM(21),
+                 kdtEBSMod(22),
+                 kdtEBSFXOHI(23),
+                 kdtEBSE1HI(24)
+               }
+
+KhompDeviceChannelGroup ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device Channel Group"
+  SYNTAX       INTEGER {
+                 kdtE1(0),
+                 kdtT1(1),
+                 kdtFXO(2),
+                 kdtFXS(3),
+                 kdtGSM(4)
+               }
+
+KhompDeviceLinkIndex ::= TEXTUAL-CONVENTION
+  DISPLAY-HINT "d"
+  STATUS       current
+  DESCRIPTION  "Device link index"
+  SYNTAX       Unsigned32 (0..3)
+
+KhompDeviceLinkAlarm ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Current alarms"
+  SYNTAX       BITS {
+                 kesSignalLost(0),
+                 kesNetworkAlarm(1),
+                 kesFrameSyncLost(2),
+                 kesMultiframeSyncLost(3),
+                 kesRemoteAlarm(4),
+                 kesHighErrorRate(5),
+                 kesUnknownAlarm(6),
+                 kesE1Error(7)
+               }
+
+KhompDeviceChannelIndex ::= TEXTUAL-CONVENTION
+  DISPLAY-HINT "d"
+  STATUS       current
+  DESCRIPTION  "Device channel index"
+  SYNTAX       Unsigned32
+
+KhompDeviceChannelCallStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device channel call status"
+  SYNTAX       INTEGER {
+                 kcsFree(0),
+                 kcsIncoming(1),
+                 kcsOutgoing(2),
+                 kcsFail(4)
+               }
+
+KhompDeviceChannelAudioStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device channel audio status"
+  SYNTAX       INTEGER {
+                 ktoneSilence(0),
+                 ktoneCallProgr(1),
+                 ktoneInterception(2),
+                 ktoneFax(3),
+                 ktoneVoice(4),
+                 ktoneCustom(5)
+               }
+
+KhompDeviceChannelFeatures ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device channel enabled features"
+  SYNTAX       BITS {
+                 kcfDtmfSuppression(0),
+                 kcfCallProgress(1),
+                 kcfPulseDetection(2),
+                 kcfAudioNotification(3),
+                 kcfEchoCanceller(4),
+                 kcfAutoGainControl(5),
+                 kcfObsolete1(6),
+                 kcfHighImpEvents(7),
+                 kcfCallAnswerInfo(8),
+                 kcfHMPToneDetection(9),
+                 kcfPlayerAGC(10)
+               }
+
+KhompDeviceE1ChannelStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device E1 channel status"
+  SYNTAX       BITS {
+                 kecsBusy(0),
+                 kecsOutgoing(1),
+                 kecsIncoming(2),
+                 kecsLocked(3),
+                 kecsOutgoingLock(4),
+                 kecsLocalFail(5),
+                 kecsIncomingLock(6),
+                 kecsRemoteLock(7)
+               }
+
+KhompDeviceFxoChannelStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device FXO channel status"
+  SYNTAX       INTEGER {
+                 kfcsDisabled(0),
+                 kfcsEnabled(1)
+               }
+
+KhompDeviceFxsChannelStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device FXS channel status"
+  SYNTAX       INTEGER {
+                 kfxsOnHook(0),
+                 kfxsOffHook(1),
+                 kfxsRinging(2),
+                 kfxsFail(3)
+               }
+
+KhompDeviceGsmChannelStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device GSM channel status"
+  SYNTAX       INTEGER {
+                 kgsmIdle(0),
+                 kgsmCallInProgress(1),
+                 kgsmSMSInProgress(2),
+                 kgsmModemError(3),
+                 kgsmSIMCardError(4),
+                 kgsmNetworkError(5),
+                 kgsmNotReady(6)
+               }
+
+KhompDeviceGsmChannelRegistryStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "GSM channel registry status"
+  SYNTAX       INTEGER {
+                 kgrsNotRegistered(0),
+                 kgrsRegistered(1),
+                 kgrsSearching(2),
+                 kgrsDenied(3),
+                 kgrsUnknown(4),
+                 kgrsRoaming(5),
+                 kgrsInitializing(255)
+               }
+
+KhompDeviceGsmChannelEnabledFeatures ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "GSM channel enabled features"
+  SYNTAX       BITS {
+                 kgcfMultiparty(0),
+                 kgcfCallForward(1)
+               }
+
+KhompDeviceGsmChannelCallWaitingState ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "GSM call waiting state"
+  SYNTAX       INTEGER {
+                 kgcwsDisabled(0),
+                 kgcwsEnabled(1),
+                 kgcwsUnknown(2)
+               }
+
+KhompDeviceGsmCallIndex ::= TEXTUAL-CONVENTION
+  DISPLAY-HINT "d"
+  STATUS       current
+  DESCRIPTION  "GSM call index"
+  SYNTAX       Unsigned32 (0..5)
+
+KhompDeviceGsmCallStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "GSM call status"
+  SYNTAX       INTEGER {
+                 kgcstActive(0),
+                 kgcstHeld(1),
+                 kgcstDialing(2),
+                 kgcstAlerting(3),
+                 kgcstIncoming(4),
+                 kgcstWaiting(5),
+                 kgcstReleased(6)
+               }
+
+KhompDeviceGsmCallMode ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "GSM call mode"
+  SYNTAX       INTEGER {
+                 kgcmVoice(0),
+                 kgcmData(1),
+                 kgcmFax(2),
+                 kgcmUnknown(3)
+               }
+
+KhompDeviceGsmCallFlags ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "GSM call flags"
+  SYNTAX       BITS {
+                 kgcflMultiparty(0),
+                 kgcflInternationalNumber(1),
+                 kgcflMobileTerminatedCall(2)
+               }
+
+KhompDeviceSipChannelStatus ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Device SIP channel status"
+  SYNTAX       BITS {
+                 kipcsOutgoingLock(4),
+                 kipcsIncomingLock(6)
+               }
+
+KhompR2Country ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Country MFC standard currently being used by R2 protocol"
+  SYNTAX       INTEGER {
+                 brasil(0),
+                 mexico(1),
+                 argentina(2),
+                 chile(3),
+                 uruguai(4),
+                 venezuela(5),
+                 invalidCountry(6)
+               }
+
+KhompLinkOperatingMode ::= TEXTUAL-CONVENTION
+  STATUS       current
+  DESCRIPTION  "Link operating mode"
+  SYNTAX       INTEGER {
+                 t1(0),
+                 e1(1)
+               }
+
+--
+-- LEGACY / OBSOLETE
+--
+
+-- 32624.1
+-- DEPRECATED (issue #3746)
+legacy OBJECT IDENTIFIER ::= { khomp 1 }
+
+--
+-- OBJECTS
+--
+
+-- 32624.2
+k3l OBJECT IDENTIFIER ::= { khomp 2 }
+
+-- 32624.2.1
+k3lMIBObjects OBJECT IDENTIFIER ::= { k3l 1 }
+
+-- 32624.2.1.1
+k3lVersion OBJECT IDENTIFIER ::= { k3lMIBObjects 1 }
+
+-- 32624.2.1.1.1
+k3lVersionMajor OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Current API version major number"
+  ::= { k3lVersion 1 }
+
+-- 32624.2.1.1.2
+k3lVersionMinor OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Current API version minor number"
+  ::= { k3lVersion 2 }
+
+-- 32624.2.1.1.3
+k3lVersionBuild OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Current API version build number"
+  ::= { k3lVersion 3 }
+
+-- 32624.2.1.1.4
+k3lVersionRevision OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Current API version revision"
+  ::= { k3lVersion 4 }
+
+-- 32624.2.1.1.5
+k3lVersionString OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Full API version as string"
+  ::= { k3lVersion 5 }
+
+-- 32624.2.1.2
+k3lDevice OBJECT IDENTIFIER ::= { k3lMIBObjects 2 }
+
+-- 32624.2.1.2.1
+k3lDeviceCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Number of devices connected"
+  ::= { k3lDevice 1 }
+
+-- 32624.2.1.2.2
+k3lDeviceTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Devices table (conceptual)"
+  ::= { k3lDevice 2 }
+
+-- 32624.2.1.2.2.1
+k3lDeviceEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device entry inside k3lDeviceTable (conceptual row)"
+  INDEX        { k3lDeviceSerial }
+  ::= { k3lDeviceTable 1 }
+
+K3lDeviceEntry ::= SEQUENCE {
+  k3lDeviceSerial      KhompDeviceSerial,
+  k3lDeviceIndex       KhompDeviceIndex,
+  k3lDeviceDescr       DisplayString,
+  k3lDeviceOperStatus  KhompOperStatus,
+  k3lDeviceType        KhompDeviceType,
+  k3lDeviceModel       Unsigned32,
+  k3lDeviceLinkCount   Unsigned32,
+  k3lDeviceChannelCount
+                       Unsigned32,
+  k3lDeviceChannelCountEnabled
+                       Gauge32,
+  k3lDeviceChannelCountIdle
+                       Gauge32,
+  k3lDeviceChannelCountFail
+                       Gauge32,
+  k3lDeviceChannelCountBusy
+                       Gauge32,
+  k3lDeviceReset       KhompBoolean,
+  k3lDeviceChannelGroupCount
+                    Unsigned32,
+  k3lDeviceStatsIncoming
+              Counter32,
+  k3lDeviceStatsOutgoing
+              Counter32,
+  k3lDeviceOutgoingCompleted
+              Counter32,
+  k3lDeviceOutgoingError
+              Counter32,
+  k3lDeviceRemoteDisconnect
+              Counter32,
+  k3lDeviceLocalDisconnect
+              Counter32,
+  k3lDeviceCallFailBusy
+              Counter32,
+  k3lDeviceCallFailNoAnswer
+              Counter32,
+  k3lDeviceCallFailRejected
+              Counter32,
+  k3lDeviceCallFailChangedNumber
+              Counter32,
+  k3lDeviceCallFailInvalidNumber
+              Counter32,
+  k3lDeviceCallFailOutOfService
+              Counter32,
+  k3lDeviceCallFailCongestion
+              Counter32,
+  k3lDeviceCallFailNetworkFailure
+              Counter32,
+  k3lDeviceCallFailOther
+              Counter32,
+  k3lDeviceEbsIP
+              DisplayString
+
+}
+
+-- 32624.2.1.2.2.1.1
+k3lDeviceSerial OBJECT-TYPE
+  SYNTAX       KhompDeviceSerial
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device unique serial number"
+  ::= { k3lDeviceEntry 1 }
+
+-- 32624.2.1.2.2.1.2
+k3lDeviceIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceIndex
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device K3L index"
+  ::= { k3lDeviceEntry 2 }
+
+-- 32624.2.1.2.2.1.3
+k3lDeviceDescr OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device description"
+  ::= { k3lDeviceEntry 3 }
+
+-- 32624.2.1.2.2.1.4
+k3lDeviceOperStatus OBJECT-TYPE
+  SYNTAX       KhompOperStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device operational status"
+  ::= { k3lDeviceEntry 4 }
+
+-- 32624.2.1.2.2.1.5
+k3lDeviceType OBJECT-TYPE
+  SYNTAX       KhompDeviceType
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device type"
+  ::= { k3lDeviceEntry 5 }
+
+-- 32624.2.1.2.2.1.6
+k3lDeviceModel OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device model"
+  ::= { k3lDeviceEntry 6 }
+
+-- 32624.2.1.2.2.1.7
+k3lDeviceLinkCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device links count"
+  ::= { k3lDeviceEntry 7 }
+
+-- 32624.2.1.2.2.1.8
+k3lDeviceChannelCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device channels count"
+  ::= { k3lDeviceEntry 8 }
+
+-- 32624.2.1.2.2.1.9
+k3lDeviceChannelCountEnabled OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device available channels count"
+  ::= { k3lDeviceEntry 9 }
+
+-- 32624.2.1.2.2.1.10
+k3lDeviceChannelCountIdle OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total IDLE channels in this device"
+  ::= { k3lDeviceEntry 10 }
+
+-- 32624.2.1.2.2.1.11
+k3lDeviceChannelCountFail OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total FAIL channels in this device"
+  ::= { k3lDeviceEntry 11 }
+
+-- 32624.2.1.2.2.1.12
+k3lDeviceChannelCountBusy OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total BUSY channels in this device"
+  ::= { k3lDeviceEntry 12 }
+
+-- 32624.2.1.2.2.1.13
+k3lDeviceReset OBJECT-TYPE
+  SYNTAX       KhompBoolean
+  MAX-ACCESS   read-write
+  STATUS       current
+  DESCRIPTION  "Request device reset. NOTE: Reading this value will always return false(0)"
+  ::= { k3lDeviceEntry 13 }
+
+-- 32624.2.1.2.2.1.14
+k3lDeviceChannelGroupCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total devices channel groups"
+  ::= { k3lDeviceEntry 14 }
+
+-- 32624.2.1.2.2.1.15
+k3lDeviceStatsIncoming OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Incoming"
+  ::= { k3lDeviceEntry 15 }
+
+-- 32624.2.1.2.2.1.16
+k3lDeviceStatsOutgoing OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Outgoing"
+  ::= { k3lDeviceEntry 16 }
+
+-- 32624.2.1.2.2.1.17
+k3lDeviceOutgoingCompleted OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Outgoing Completed"
+  ::= { k3lDeviceEntry 17 }
+
+-- 32624.2.1.2.2.1.18
+k3lDeviceOutgoingError OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Outgoing Error"
+  ::= { k3lDeviceEntry 18 }
+
+-- 32624.2.1.2.2.1.19
+k3lDeviceRemoteDisconnect OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Remote Disconnect"
+  ::= { k3lDeviceEntry 19 }
+
+-- 32624.2.1.2.2.1.20
+k3lDeviceLocalDisconnect OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Local Disconnect "
+  ::= { k3lDeviceEntry 20 }
+
+-- 32624.2.1.2.2.1.21
+k3lDeviceCallFailBusy OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Fail Busy "
+  ::= { k3lDeviceEntry 21 }
+
+-- 32624.2.1.2.2.1.22
+k3lDeviceCallFailNoAnswer OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats No Answer "
+  ::= { k3lDeviceEntry 22 }
+
+-- 32624.2.1.2.2.1.23
+k3lDeviceCallFailRejected OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Fail Reject"
+  ::= { k3lDeviceEntry 23 }
+
+-- 32624.2.1.2.2.1.24
+k3lDeviceCallFailChangedNumber OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Fail Changed Number"
+  ::= { k3lDeviceEntry 24 }
+
+-- 32624.2.1.2.2.1.25
+k3lDeviceCallFailInvalidNumber OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Fail Invalid Number"
+  ::= { k3lDeviceEntry 25 }
+
+-- 32624.2.1.2.2.1.26
+k3lDeviceCallFailOutOfService OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Fail Out Of Service"
+  ::= { k3lDeviceEntry 26 }
+
+-- 32624.2.1.2.2.1.27
+k3lDeviceCallFailCongestion OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Fail Congestion"
+  ::= { k3lDeviceEntry 27 }
+
+-- 32624.2.1.2.2.1.28
+k3lDeviceCallFailNetworkFailure OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Network Failure"
+  ::= { k3lDeviceEntry 28 }
+
+-- 32624.2.1.2.2.1.29
+k3lDeviceCallFailOther OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total device channel Stats Others "
+  ::= { k3lDeviceEntry 29 }
+
+-- 32624.2.1.2.2.1.30
+k3lDeviceEbsIP OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device EBS IP Address"
+  ::= { k3lDeviceEntry 30 }
+
+-- 32624.2.1.2.3
+k3lDeviceLinkTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceLinkEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device links table (conceptual)"
+  ::= { k3lDevice 3 }
+
+-- 32624.2.1.2.3.1
+k3lDeviceLinkEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceLinkEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device link (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceLinkIndex }
+  ::= { k3lDeviceLinkTable 1 }
+
+K3lDeviceLinkEntry ::= SEQUENCE {
+  k3lDeviceLinkIndex
+               KhompDeviceLinkIndex,
+  k3lDeviceLinkOperStatus
+               KhompOperStatus,
+  k3lDeviceLinkDescr
+               DisplayString,
+  k3lDeviceLinkSignaling
+               KhompSignaling,
+  k3lDeviceLinkAlarm
+               KhompDeviceLinkAlarm,
+  k3lDeviceLinkErrorCountChangesToLock
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountLostOfSignal
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountAlarmNotification
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountLostOfFrame
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountLostOfMultiframe
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountRemoteAlarm
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountSlipAlarm
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountPRBS
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountWrongEBits
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountJitterVariation
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountFramesWithoutSync
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountMultiframeSignal
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountFrameError
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountBipolarViolation
+               KhompUnsigned16,
+  k3lDeviceLinkErrorCountCRC4
+               KhompUnsigned16,
+  k3lDeviceLinkReset
+               KhompBoolean,
+  k3lDeviceLinkResetErrorCount
+               KhompBoolean,
+  k3lDeviceLinkBlock
+               KhompBoolean,
+  k3lDeviceLinkChannelCount
+               Unsigned32,
+  k3lDeviceLinkChannelCountEnabled
+               Gauge32,
+  k3lDeviceLinkChannelCountIdle
+               Gauge32,
+  k3lDeviceLinkChannelCountFail
+               Gauge32,
+  k3lDeviceLinkChannelCountBusy
+               Gauge32,
+  k3lDeviceLinkReceivingClock
+               KhompBoolean,
+  k3lDeviceLinkStatsIncoming
+              Counter32,
+  k3lDeviceLinkStatsOutgoing
+              Counter32,
+  k3lDeviceLinkOutgoingCompleted
+              Counter32,
+  k3lDeviceLinkOutgoingError
+              Counter32,
+  k3lDeviceLinkRemoteDisconnect
+              Counter32,
+  k3lDeviceLinkLocalDisconnect
+              Counter32,
+  k3lDeviceLinkCallFailBusy
+              Counter32,
+  k3lDeviceLinkCallFailNoAnswer
+              Counter32,
+  k3lDeviceLinkCallFailRejected
+              Counter32,
+  k3lDeviceLinkCallFailChangedNumber
+              Counter32,
+  k3lDeviceLinkCallFailInvalidNumber
+              Counter32,
+  k3lDeviceLinkCallFailOutOfService
+              Counter32,
+  k3lDeviceLinkCallFailCongestion
+              Counter32,
+  k3lDeviceLinkCallFailNetworkFailure
+              Counter32,
+  k3lDeviceLinkCallFailOther
+              Counter32,
+  k3lDeviceLinkOperatingMode
+              KhompLinkOperatingMode
+}
+
+-- 32624.2.1.2.3.1.1
+k3lDeviceLinkIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceLinkIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Link index"
+  ::= { k3lDeviceLinkEntry 1 }
+
+-- 32624.2.1.2.3.1.2
+k3lDeviceLinkOperStatus OBJECT-TYPE
+  SYNTAX       KhompOperStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Link operational status"
+  ::= { k3lDeviceLinkEntry 2 }
+
+-- 32624.2.1.2.3.1.3
+k3lDeviceLinkDescr OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Link name (alias)"
+  ::= { k3lDeviceLinkEntry 3 }
+
+-- 32624.2.1.2.3.1.4
+k3lDeviceLinkSignaling OBJECT-TYPE
+  SYNTAX       KhompSignaling
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Current link signaling"
+  ::= { k3lDeviceLinkEntry 4 }
+
+-- 32624.2.1.2.3.1.5
+k3lDeviceLinkAlarm OBJECT-TYPE
+  SYNTAX       KhompDeviceLinkAlarm
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Link alarms"
+  ::= { k3lDeviceLinkEntry 5 }
+
+-- 32624.2.1.2.3.1.6
+k3lDeviceLinkErrorCountChangesToLock OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Changes to Lock error counter"
+  ::= { k3lDeviceLinkEntry 6 }
+
+-- 32624.2.1.2.3.1.7
+k3lDeviceLinkErrorCountLostOfSignal OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Lost of Signal error counter"
+  ::= { k3lDeviceLinkEntry 7 }
+
+-- 32624.2.1.2.3.1.8
+k3lDeviceLinkErrorCountAlarmNotification OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Alarm Notification error counter"
+  ::= { k3lDeviceLinkEntry 8 }
+
+-- 32624.2.1.2.3.1.9
+k3lDeviceLinkErrorCountLostOfFrame OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Lost of Frame error counter"
+  ::= { k3lDeviceLinkEntry 9 }
+
+-- 32624.2.1.2.3.1.10
+k3lDeviceLinkErrorCountLostOfMultiframe OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Lost of Multi-Frame error counter"
+  ::= { k3lDeviceLinkEntry 10 }
+
+-- 32624.2.1.2.3.1.11
+k3lDeviceLinkErrorCountRemoteAlarm OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Remote Alamr error counter"
+  ::= { k3lDeviceLinkEntry 11 }
+
+-- 32624.2.1.2.3.1.12
+k3lDeviceLinkErrorCountSlipAlarm OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Slip Alarm error counter"
+  ::= { k3lDeviceLinkEntry 12 }
+
+-- 32624.2.1.2.3.1.13
+k3lDeviceLinkErrorCountPRBS OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "PRBS error counter"
+  ::= { k3lDeviceLinkEntry 13 }
+
+-- 32624.2.1.2.3.1.14
+k3lDeviceLinkErrorCountWrongEBits OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Wrong E-Bits error counter"
+  ::= { k3lDeviceLinkEntry 14 }
+
+-- 32624.2.1.2.3.1.15
+k3lDeviceLinkErrorCountJitterVariation OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Jitter Variation error counter"
+  ::= { k3lDeviceLinkEntry 15 }
+
+-- 32624.2.1.2.3.1.16
+k3lDeviceLinkErrorCountFramesWithoutSync OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Frames Without Sync error counter"
+  ::= { k3lDeviceLinkEntry 16 }
+
+-- 32624.2.1.2.3.1.17
+k3lDeviceLinkErrorCountMultiframeSignal OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Multiframe Signal error counter"
+  ::= { k3lDeviceLinkEntry 17 }
+
+-- 32624.2.1.2.3.1.18
+k3lDeviceLinkErrorCountFrameError OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Frame Error error counter"
+  ::= { k3lDeviceLinkEntry 18 }
+
+-- 32624.2.1.2.3.1.19
+k3lDeviceLinkErrorCountBipolarViolation OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Bipolar Violation error counter"
+  ::= { k3lDeviceLinkEntry 19 }
+
+-- 32624.2.1.2.3.1.20
+k3lDeviceLinkErrorCountCRC4 OBJECT-TYPE
+  SYNTAX       KhompUnsigned16
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "CRC4 error counter"
+  ::= { k3lDeviceLinkEntry 20 }
+
+-- 32624.2.1.2.3.1.21
+k3lDeviceLinkReset OBJECT-TYPE
+  SYNTAX       KhompBoolean
+  MAX-ACCESS   read-write
+  STATUS       current
+  DESCRIPTION  "Request link reset. NOTE: Reading this value will always return false(0)"
+  ::= { k3lDeviceLinkEntry 21 }
+
+-- 32624.2.1.2.3.1.22
+k3lDeviceLinkResetErrorCount OBJECT-TYPE
+  SYNTAX       KhompBoolean
+  MAX-ACCESS   read-write
+  STATUS       current
+  DESCRIPTION  "Reset link error counters. NOTE: Reading this value will always return false(0)"
+  ::= { k3lDeviceLinkEntry 22 }
+
+-- 32624.2.1.2.3.1.23
+k3lDeviceLinkBlock OBJECT-TYPE
+  SYNTAX       KhompBoolean
+  MAX-ACCESS   read-write
+  STATUS       current
+  DESCRIPTION  "Block incoming/outgoing calls in this link"
+  ::= { k3lDeviceLinkEntry 23 }
+
+-- 32624.2.1.2.3.1.24
+k3lDeviceLinkChannelCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device link channels count"
+  ::= { k3lDeviceLinkEntry 24 }
+
+-- 32624.2.1.2.3.1.25
+k3lDeviceLinkChannelCountEnabled OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device link available channels count"
+  ::= { k3lDeviceLinkEntry 25 }
+
+-- 32624.2.1.2.3.1.26
+k3lDeviceLinkChannelCountIdle OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total IDLE channels in this device link"
+  ::= { k3lDeviceLinkEntry 26 }
+
+-- 32624.2.1.2.3.1.27
+k3lDeviceLinkChannelCountFail OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total FAIL channels in this device link"
+  ::= { k3lDeviceLinkEntry 27 }
+
+-- 32624.2.1.2.3.1.28
+k3lDeviceLinkChannelCountBusy OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total BUSY channels in this device link"
+  ::= { k3lDeviceLinkEntry 28 }
+
+-- 32624.2.1.2.3.1.29
+k3lDeviceLinkReceivingClock OBJECT-TYPE
+  SYNTAX       KhompBoolean
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device link is receiving clock"
+  ::= { k3lDeviceLinkEntry 29 }
+
+-- 32624.2.1.2.3.1.30
+k3lDeviceLinkStatsIncoming OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Incoming"
+  ::= { k3lDeviceLinkEntry 30 }
+
+-- 32624.2.1.2.3.1.31
+k3lDeviceLinkStatsOutgoing OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Outgoing"
+  ::= { k3lDeviceLinkEntry 31 }
+
+-- 32624.2.1.2.3.1.32
+k3lDeviceLinkOutgoingCompleted OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Outgoing Completed"
+  ::= { k3lDeviceLinkEntry 32 }
+
+-- 32624.2.1.2.3.1.33
+k3lDeviceLinkOutgoingError OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Outgoing Error"
+  ::= { k3lDeviceLinkEntry 33 }
+
+-- 32624.2.1.2.3.1.34
+k3lDeviceLinkRemoteDisconnect OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Remote Disconnect"
+  ::= { k3lDeviceLinkEntry 34 }
+
+-- 32624.2.1.2.3.1.35
+k3lDeviceLinkLocalDisconnect OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Local Disconnect "
+  ::= { k3lDeviceLinkEntry 35 }
+
+-- 32624.2.1.2.3.1.36
+k3lDeviceLinkCallFailBusy OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Fail Busy "
+  ::= { k3lDeviceLinkEntry 36 }
+
+-- 32624.2.1.2.3.1.37
+k3lDeviceLinkCallFailNoAnswer OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats No Answer "
+  ::= { k3lDeviceLinkEntry 37 }
+
+-- 32624.2.1.2.3.1.38
+k3lDeviceLinkCallFailRejected OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Fail Reject"
+  ::= { k3lDeviceLinkEntry 38 }
+
+-- 32624.2.1.2.3.1.39
+k3lDeviceLinkCallFailChangedNumber OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Fail Changed Number"
+  ::= { k3lDeviceLinkEntry 39 }
+
+-- 32624.2.1.2.3.1.40
+k3lDeviceLinkCallFailInvalidNumber OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Fail Invalid Number"
+  ::= { k3lDeviceLinkEntry 40 }
+
+-- 32624.2.1.2.3.1.41
+k3lDeviceLinkCallFailOutOfService OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Fail Out Of Service"
+  ::= { k3lDeviceLinkEntry 41 }
+
+-- 32624.2.1.2.3.1.42
+k3lDeviceLinkCallFailCongestion OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Fail Congestion"
+  ::= { k3lDeviceLinkEntry 42 }
+
+-- 32624.2.1.2.3.1.43
+k3lDeviceLinkCallFailNetworkFailure OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Network Failure"
+  ::= { k3lDeviceLinkEntry 43 }
+
+-- 32624.2.1.2.3.1.44
+k3lDeviceLinkCallFailOther OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total link channel Stats Others "
+  ::= { k3lDeviceLinkEntry 44 }
+
+-- 32624.2.1.2.3.1.45
+k3lDeviceLinkOperatingMode OBJECT-TYPE
+  SYNTAX       KhompLinkOperatingMode
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Link operating mode"
+  ::= { k3lDeviceLinkEntry 45 }
+
+-- 32624.2.1.2.4
+k3lDeviceHILinkTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceHILinkEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device HI links table (conceptual)"
+  ::= { k3lDevice 4 }
+
+-- 32624.2.1.2.4.1
+k3lDeviceHILinkEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceHILinkEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device HI link (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceHILinkIndex }
+  ::= { k3lDeviceHILinkTable 1 }
+
+K3lDeviceHILinkEntry ::= SEQUENCE {
+  k3lDeviceHILinkIndex
+               KhompDeviceLinkIndex,
+  k3lDeviceHILinkOperStatus
+               KhompOperStatus,
+  k3lDeviceHILinkAlarm
+               KhompDeviceLinkAlarm
+}
+
+-- 32624.2.1.2.4.1.1
+k3lDeviceHILinkIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceLinkIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "HI link RX index"
+  ::= { k3lDeviceHILinkEntry 1 }
+
+-- 32624.2.1.2.4.1.2
+k3lDeviceHILinkOperStatus OBJECT-TYPE
+  SYNTAX       KhompOperStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "HI link RX operational status"
+  ::= { k3lDeviceHILinkEntry 2 }
+
+-- 32624.2.1.2.4.1.3
+k3lDeviceHILinkAlarm OBJECT-TYPE
+  SYNTAX       KhompDeviceLinkAlarm
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "HI link RX alarm"
+  ::= { k3lDeviceHILinkEntry 3 }
+
+-- 32624.2.1.2.5
+k3lDeviceChannelTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device channels table (conceptual)"
+  ::= { k3lDevice 5 }
+
+-- 32624.2.1.2.5.1
+k3lDeviceChannelEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device channel (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceChannelIndex }
+  ::= { k3lDeviceChannelTable 1 }
+
+K3lDeviceChannelEntry ::= SEQUENCE {
+  k3lDeviceChannelIndex
+               KhompDeviceChannelIndex,
+  k3lDeviceChannelSignaling
+               KhompSignaling,
+  k3lDeviceChannelCallStatus
+               KhompDeviceChannelCallStatus,
+  k3lDeviceChannelAudioStatus
+               KhompDeviceChannelAudioStatus,
+  k3lDeviceChannelEnabledFeatures
+               KhompDeviceChannelFeatures,
+  k3lDeviceChannelStatsIncoming
+               Counter32,
+  k3lDeviceChannelStatsOutgoing
+               Counter32,
+  k3lDeviceChannelStatsOutgoingCompleted
+               Counter32,
+  k3lDeviceChannelStatsOutgoingError
+               Counter32,
+  k3lDeviceChannelStatsRemoteDisconnect
+               Counter32,
+  k3lDeviceChannelStatsLocalDisconnect
+               Counter32,
+  k3lDeviceChannelStatsCallFailBusy
+               Counter32,
+  k3lDeviceChannelStatsCallFailNoAnswer
+               Counter32,
+  k3lDeviceChannelStatsCallFailRejected
+               Counter32,
+  k3lDeviceChannelStatsCallFailChangedNumber
+               Counter32,
+  k3lDeviceChannelStatsCallFailInvalidNumber
+               Counter32,
+  k3lDeviceChannelStatsCallFailOutOfService
+               Counter32,
+  k3lDeviceChannelStatsCallFailCongestion
+               Counter32,
+  k3lDeviceChannelStatsCallFailNetworkFailure
+               Counter32,
+  k3lDeviceChannelStatsCallFailOther
+               Counter32,
+  k3lDeviceChannelDestinationAddress
+               DisplayString,
+  k3lDeviceChannelCallDuration
+               Gauge32,
+  k3lDeviceChannelRecording
+               KhompBoolean,
+  k3lDeviceChannelAverageCallTime
+               Gauge32,
+  k3lDeviceChannelOriginAddress
+               DisplayString,
+  k3lDeviceChannelCadenceStatus
+               KhompBoolean
+}
+
+-- 32624.2.1.2.5.1.1
+k3lDeviceChannelIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device channel index"
+  ::= { k3lDeviceChannelEntry 1 }
+
+-- 32624.2.1.2.5.1.2
+k3lDeviceChannelSignaling OBJECT-TYPE
+  SYNTAX       KhompSignaling
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel signaling"
+  ::= { k3lDeviceChannelEntry 2 }
+
+-- 32624.2.1.2.5.1.3
+k3lDeviceChannelCallStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelCallStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel call status"
+  ::= { k3lDeviceChannelEntry 3 }
+
+-- 32624.2.1.2.5.1.4
+k3lDeviceChannelAudioStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelAudioStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel audio status"
+  ::= { k3lDeviceChannelEntry 4 }
+
+-- 32624.2.1.2.5.1.5
+k3lDeviceChannelEnabledFeatures OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelFeatures
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel enabled features"
+  ::= { k3lDeviceChannelEntry 5 }
+
+-- 32624.2.1.2.5.1.6
+k3lDeviceChannelStatsIncoming OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel INCOMING calls counter"
+  ::= { k3lDeviceChannelEntry 6 }
+
+-- 32624.2.1.2.5.1.7
+k3lDeviceChannelStatsOutgoing OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel OUTGOING calls counter"
+  ::= { k3lDeviceChannelEntry 7 }
+
+-- 32624.2.1.2.5.1.8
+k3lDeviceChannelStatsOutgoingCompleted OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel completed OUTGOING calls counter"
+  ::= { k3lDeviceChannelEntry 8 }
+
+-- 32624.2.1.2.5.1.9
+k3lDeviceChannelStatsOutgoingError OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel error OUTGOING calls counter"
+  ::= { k3lDeviceChannelEntry 9 }
+
+-- 32624.2.1.2.5.1.10
+k3lDeviceChannelStatsRemoteDisconnect OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Remote disconnection counter"
+  ::= { k3lDeviceChannelEntry 10 }
+
+-- 32624.2.1.2.5.1.11
+k3lDeviceChannelStatsLocalDisconnect OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Local disconnection counter"
+  ::= { k3lDeviceChannelEntry 11 }
+
+-- 32624.2.1.2.5.1.12
+k3lDeviceChannelStatsCallFailBusy OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote reply BUSY counter"
+  ::= { k3lDeviceChannelEntry 12 }
+
+-- 32624.2.1.2.5.1.13
+k3lDeviceChannelStatsCallFailNoAnswer OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote reply NO ANSWER or answer wait
+               timeout counter"
+  ::= { k3lDeviceChannelEntry 13 }
+
+-- 32624.2.1.2.5.1.14
+k3lDeviceChannelStatsCallFailRejected OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote reply REJECT counter"
+  ::= { k3lDeviceChannelEntry 14 }
+
+-- 32624.2.1.2.5.1.15
+k3lDeviceChannelStatsCallFailChangedNumber OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote replay NUMBER CHANGED counter"
+  ::= { k3lDeviceChannelEntry 15 }
+
+-- 32624.2.1.2.5.1.16
+k3lDeviceChannelStatsCallFailInvalidNumber OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote replay INVALID NUMBER counter"
+  ::= { k3lDeviceChannelEntry 16 }
+
+-- 32624.2.1.2.5.1.17
+k3lDeviceChannelStatsCallFailOutOfService OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote is/replay OUT OF SERVICE counter"
+  ::= { k3lDeviceChannelEntry 17 }
+
+-- 32624.2.1.2.5.1.18
+k3lDeviceChannelStatsCallFailCongestion OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote is/replay CONGESTION counter"
+  ::= { k3lDeviceChannelEntry 18 }
+
+-- 32624.2.1.2.5.1.19
+k3lDeviceChannelStatsCallFailNetworkFailure OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to remote replay or has occured a NETWORK
+               FAILURE counter"
+  ::= { k3lDeviceChannelEntry 19 }
+
+-- 32624.2.1.2.5.1.20
+k3lDeviceChannelStatsCallFailOther OBJECT-TYPE
+  SYNTAX       Counter32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Call failed due to OTHER error counter"
+  ::= { k3lDeviceChannelEntry 20 }
+
+-- 32624.2.1.2.5.1.21
+k3lDeviceChannelDestinationAddress OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Dialed number on the ongoing call"
+  ::= { k3lDeviceChannelEntry 21 }
+
+-- 32624.2.1.2.5.1.22
+k3lDeviceChannelCallDuration OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Duration of the ongoing call in milliseconds"
+  ::= { k3lDeviceChannelEntry 22 }
+
+-- 32624.2.1.2.5.1.23
+k3lDeviceChannelRecording OBJECT-TYPE
+  SYNTAX       KhompBoolean
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Indicates if the channel is currently recording"
+  ::= { k3lDeviceChannelEntry 23 }
+
+-- 32624.2.1.2.5.1.24
+k3lDeviceChannelAverageCallTime OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Average call duration time in milliseconds"
+  ::= { k3lDeviceChannelEntry 24 }
+
+-- 32624.2.1.2.5.1.25
+k3lDeviceChannelOriginAddress OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Origin number on the ongoing call"
+  ::= { k3lDeviceChannelEntry 25 }
+
+-- 32624.2.1.2.5.1.26
+k3lDeviceChannelCadenceStatus OBJECT-TYPE
+  SYNTAX       KhompBoolean
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Indicates if the channel is playing a cadence"
+  ::= { k3lDeviceChannelEntry 26 }
+
+-- Extended information
+-- 32624.2.1.2.6
+k3lDeviceExtended OBJECT IDENTIFIER ::= { k3lDevice 6 }
+
+-- 32624.2.1.2.6.1
+k3lDeviceExtendedE1 OBJECT IDENTIFIER ::= { k3lDeviceExtended 1 }
+
+-- 32624.2.1.2.6.1.1
+k3lDeviceE1ChannelCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device E1 channels"
+  ::= { k3lDeviceExtendedE1 1 }
+
+-- 32624.2.1.2.6.1.2
+k3lDeviceE1ChannelTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceE1ChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "E1 channels extended table (conceptual)"
+  ::= { k3lDeviceExtendedE1 2 }
+
+-- 32624.2.1.2.6.1.2.1
+k3lDeviceE1ChannelEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceE1ChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "E1 channel exteded table row (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceChannelIndex }
+  ::= { k3lDeviceE1ChannelTable 1 }
+
+K3lDeviceE1ChannelEntry ::= SEQUENCE {
+  k3lDeviceE1ChannelIndex
+               KhompDeviceChannelIndex,
+  k3lDeviceE1ChannelStatus
+               KhompDeviceE1ChannelStatus
+}
+
+-- 32624.2.1.2.6.1.2.1.1
+k3lDeviceE1ChannelIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Channel index"
+  ::= { k3lDeviceE1ChannelEntry 1 }
+
+-- 32624.2.1.2.6.1.2.1.2
+k3lDeviceE1ChannelStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceE1ChannelStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel allocation status (no bit set if FREE)"
+  ::= { k3lDeviceE1ChannelEntry 2 }
+
+-- 32624.2.1.2.6.2
+k3lDeviceExtendedFxo OBJECT IDENTIFIER ::= { k3lDeviceExtended 2 }
+
+-- 32624.2.1.2.6.2.1
+k3lDeviceFxoChannelCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device FXO channels"
+  ::= { k3lDeviceExtendedFxo 1 }
+
+-- 32624.2.1.2.6.2.2
+k3lDeviceFxoChannelTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceFxoChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "FXO channels extended table (conceptual)"
+  ::= { k3lDeviceExtendedFxo 2 }
+
+-- 32624.2.1.2.6.2.2.1
+k3lDeviceFxoChannelEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceFxoChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "FXO channel exteded table row (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceChannelIndex }
+  ::= { k3lDeviceFxoChannelTable 1 }
+
+K3lDeviceFxoChannelEntry ::= SEQUENCE {
+  k3lDeviceFxoChannelIndex
+               KhompDeviceChannelIndex,
+  k3lDeviceFxoChannelStatus
+               KhompDeviceFxoChannelStatus
+}
+
+-- 32624.2.1.2.6.2.2.1.1
+k3lDeviceFxoChannelIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Channel index"
+  ::= { k3lDeviceFxoChannelEntry 1 }
+
+-- 32624.2.1.2.6.2.2.1.2
+k3lDeviceFxoChannelStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceFxoChannelStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel allocation status"
+  ::= { k3lDeviceFxoChannelEntry 2 }
+
+-- 32624.2.1.2.6.3
+k3lDeviceExtendedFxs OBJECT IDENTIFIER ::= { k3lDeviceExtended 3 }
+
+-- 32624.2.1.2.6.3.1
+k3lDeviceFxsChannelCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device FXS channels"
+  ::= { k3lDeviceExtendedFxs 1 }
+
+-- 32624.2.1.2.6.3.2
+k3lDeviceFxsChannelTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceFxsChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "FXS channels extended table (conceptual)"
+  ::= { k3lDeviceExtendedFxs 2 }
+
+-- 32624.2.1.2.6.3.2.1
+k3lDeviceFxsChannelEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceFxsChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "FXS channel exteded table row (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceChannelIndex }
+  ::= { k3lDeviceFxsChannelTable 1 }
+
+K3lDeviceFxsChannelEntry ::= SEQUENCE {
+  k3lDeviceFxsChannelIndex
+               KhompDeviceChannelIndex,
+  k3lDeviceFxsChannelStatus
+               KhompDeviceFxsChannelStatus
+}
+
+-- 32624.2.1.2.6.3.2.1.1
+k3lDeviceFxsChannelIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Channel index"
+  ::= { k3lDeviceFxsChannelEntry 1 }
+
+-- 32624.2.1.2.6.3.2.1.2
+k3lDeviceFxsChannelStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceFxsChannelStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel allocation status"
+  ::= { k3lDeviceFxsChannelEntry 2 }
+
+-- 32624.2.1.2.6.4
+k3lDeviceExtendedGsm OBJECT IDENTIFIER ::= { k3lDeviceExtended 4 }
+
+-- 32624.2.1.2.6.4.1
+k3lDeviceGsmChannelCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device GSM channels"
+  ::= { k3lDeviceExtendedGsm 1 }
+
+-- 32624.2.1.2.6.4.2
+k3lDeviceGsmChannelTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceGsmChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "GSM channels extended table (conceptual)"
+  ::= { k3lDeviceExtendedGsm 2 }
+
+-- 32624.2.1.2.6.4.2.1
+k3lDeviceGsmChannelEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceGsmChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "GSM channel exteded table row (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceChannelIndex }
+  ::= { k3lDeviceGsmChannelTable 1 }
+
+K3lDeviceGsmChannelEntry ::= SEQUENCE {
+  k3lDeviceGsmChannelIndex
+               KhompDeviceChannelIndex,
+  k3lDeviceGsmChannelStatus
+               KhompDeviceGsmChannelStatus,
+  k3lDeviceGsmChannelSignalStrength
+               Gauge32,
+  k3lDeviceGsmChannelErrorRate
+               Gauge32,
+  k3lDeviceGsmChannelRegistryStatus
+               KhompDeviceGsmChannelRegistryStatus,
+  k3lDeviceGsmChannelOperName
+               DisplayString,
+  k3lDeviceGsmChannelUnreadSmsMessages
+               Gauge32,
+  k3lDeviceGsmChannelEnabledFeatures
+               KhompDeviceGsmChannelEnabledFeatures,
+  k3lDeviceGsmChannelImei
+               DisplayString,
+  k3lDeviceGsmChannelSim
+               Unsigned32,
+  k3lDeviceGsmChannelImsi
+               DisplayString,
+  k3lDeviceGsmChannelIccid
+               DisplayString,
+  k3lDeviceGsmChannelMsisdn
+               DisplayString,
+  k3lDeviceGsmChannelCallWaiting
+               KhompDeviceGsmChannelCallWaitingState,
+  k3lDeviceGsmChannelSimCardCount
+               Gauge32
+
+}
+
+-- 32624.2.1.2.6.4.2.1.1
+k3lDeviceGsmChannelIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Channel index"
+  ::= { k3lDeviceGsmChannelEntry 1 }
+
+-- 32624.2.1.2.6.4.2.1.2
+k3lDeviceGsmChannelStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmChannelStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel status"
+  ::= { k3lDeviceGsmChannelEntry 2 }
+
+-- 32624.2.1.2.6.4.2.1.3
+k3lDeviceGsmChannelSignalStrength OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel signal strength (0..100)"
+  ::= { k3lDeviceGsmChannelEntry 3 }
+
+-- 32624.2.1.2.6.4.2.1.4
+k3lDeviceGsmChannelErrorRate OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel error rate (0..7)"
+  ::= { k3lDeviceGsmChannelEntry 4 }
+
+-- 32624.2.1.2.6.4.2.1.5
+k3lDeviceGsmChannelRegistryStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmChannelRegistryStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Registry status"
+  ::= { k3lDeviceGsmChannelEntry 5 }
+
+-- 32624.2.1.2.6.4.2.1.6
+k3lDeviceGsmChannelOperName OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "GSM service provider name"
+  ::= { k3lDeviceGsmChannelEntry 6 }
+
+-- 32624.2.1.2.6.4.2.1.7
+k3lDeviceGsmChannelUnreadSmsMessages OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Number of unread SMS messages"
+  ::= { k3lDeviceGsmChannelEntry 7 }
+
+-- 32624.2.1.2.6.4.2.1.8
+k3lDeviceGsmChannelEnabledFeatures OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmChannelEnabledFeatures
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Features enabled"
+  ::= { k3lDeviceGsmChannelEntry 8 }
+
+-- 32624.2.1.2.6.4.2.1.9
+k3lDeviceGsmChannelImei OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "International Mobile Equipment Identity - IMEI"
+  ::= { k3lDeviceGsmChannelEntry 9 }
+
+-- 32624.2.1.2.6.4.2.1.10
+k3lDeviceGsmChannelSim OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Current SIM slot"
+  ::= { k3lDeviceGsmChannelEntry 10 }
+
+  -- 32624.2.1.2.6.4.2.1.11
+k3lDeviceGsmChannelImsi OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "International Mobile Station Identity"
+  ::= { k3lDeviceGsmChannelEntry 11 }
+
+  -- 32624.2.1.2.6.4.2.1.12
+k3lDeviceGsmChannelIccid OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Integrated Circuit Card ID"
+  ::= { k3lDeviceGsmChannelEntry 12 }
+
+  -- 32624.2.1.2.6.4.2.1.13
+k3lDeviceGsmChannelMsisdn OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Mobile Systems ISDN Number"
+  ::= { k3lDeviceGsmChannelEntry 13 }
+
+  -- 32624.2.1.2.6.4.2.1.14
+k3lDeviceGsmChannelCallWaiting OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmChannelCallWaitingState
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "GSM channel call waiting state"
+  ::= { k3lDeviceGsmChannelEntry 14 }
+
+  -- 32624.2.1.2.6.4.2.1.15
+k3lDeviceGsmChannelSimCardCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Number of SIM cards"
+  ::= { k3lDeviceGsmChannelEntry 15 }
+
+
+-- 32624.2.1.2.6.4.3
+k3lDeviceGsmCallTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceGsmCallEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "GSM calls table (conceptual)"
+  ::= { k3lDeviceExtendedGsm 3 }
+
+-- 32624.2.1.2.6.4.3.1
+k3lDeviceGsmCallEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceGsmCallEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "GSM calls table entry (conceptual)"
+  INDEX        { k3lDeviceSerial, k3lDeviceChannelIndex, k3lDeviceGsmCallIndex }
+  ::= { k3lDeviceGsmCallTable 1 }
+
+K3lDeviceGsmCallEntry ::= SEQUENCE {
+  k3lDeviceGsmCallIndex
+               KhompDeviceGsmCallIndex,
+  k3lDeviceGsmCallStatus
+               KhompDeviceGsmCallStatus,
+  k3lDeviceGsmCallMode
+               KhompDeviceGsmCallMode,
+  k3lDeviceGsmCallNumber
+               DisplayString,
+  k3lDeviceGsmCallFlags
+               KhompDeviceGsmCallFlags
+}
+
+-- 32624.2.1.2.6.4.3.1.1
+k3lDeviceGsmCallIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmCallIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "GSM call index"
+  ::= { k3lDeviceGsmCallEntry 1 }
+
+-- 32624.2.1.2.6.4.3.1.2
+k3lDeviceGsmCallStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmCallStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "GSM call status"
+  ::= { k3lDeviceGsmCallEntry 2 }
+
+-- 32624.2.1.2.6.4.3.1.3
+k3lDeviceGsmCallMode OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmCallMode
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "GSM call mode"
+  ::= { k3lDeviceGsmCallEntry 3 }
+
+-- 32624.2.1.2.6.4.3.1.4
+k3lDeviceGsmCallNumber OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "GSM call number"
+  ::= { k3lDeviceGsmCallEntry 4 }
+
+-- 32624.2.1.2.6.4.3.1.5
+k3lDeviceGsmCallFlags OBJECT-TYPE
+  SYNTAX       KhompDeviceGsmCallFlags
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "GSM call flags"
+  ::= { k3lDeviceGsmCallEntry 5 }
+
+-- 32624.2.1.2.6.5
+k3lDeviceExtendedVoip OBJECT IDENTIFIER ::= { k3lDeviceExtended 5 }
+
+-- 32624.2.1.2.6.5.1
+k3lDeviceSipChannelCount OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Device SIP channels -- if the device is a CTI EBS, then this
+               OID is filled with the number of VoIP channels added by this
+               device, no information is provided by k3lDeviceSipChannelTable
+               in this case"
+  ::= { k3lDeviceExtendedVoip 1 }
+
+-- 32624.2.1.2.6.5.2
+k3lDeviceSipChannelTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceSipChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "SIP channels extended table (conceptual)"
+  ::= { k3lDeviceExtendedVoip 2 }
+
+-- 32624.2.1.2.6.5.2.1
+k3lDeviceSipChannelEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceSipChannelEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "SIP channel exteded table row (conceptual)"
+  INDEX        { k3lDeviceChannelIndex }
+  ::= { k3lDeviceSipChannelTable 1 }
+
+K3lDeviceSipChannelEntry ::= SEQUENCE {
+  k3lDeviceSipChannelIndex
+               KhompDeviceChannelIndex,
+  k3lDeviceSipChannelStatus
+               KhompDeviceSipChannelStatus,
+  k3lDeviceVoipProfileLocalAddress
+               DisplayString,
+  k3lDeviceVoipProfileLocalPort
+               Gauge32,
+  k3lDeviceVoipProfileTransportType
+               DisplayString,
+  k3lDeviceVoipProfileRTPAddress
+               DisplayString,
+  k3lDeviceVoipProfileUser
+               DisplayString,
+  k3lDeviceVoipProfileAuthorizationUser
+               DisplayString,
+  k3lDeviceVoipProfileRealm
+               DisplayString,
+  k3lDeviceVoipProfileDomain
+               DisplayString,
+  k3lDeviceVoipProfileDomainPort
+               Gauge32,
+  k3lDeviceVoipProfileProxy
+               DisplayString,
+  k3lDeviceVoipProfileProxyPort
+               Gauge32,
+  k3lDeviceVoipProfileRegistered
+               DisplayString,
+  k3lDeviceVoipChannelTransactionCount
+                Gauge32,
+  k3lDeviceVoipChannelClientTransactionCount
+                Gauge32,
+  k3lDeviceVoipChannelServerTransactionCount
+                Gauge32,
+  k3lDeviceVoipChannelClientTransactionFailureCount
+                Gauge32,
+  k3lDeviceVoipChannelServerTransactionFailureCount
+                Gauge32,
+  k3lDeviceVoipChannelClientTransactionFailure4xxCount
+                Gauge32,
+  k3lDeviceVoipChannelServerTransactionFailure4xxCount
+                Gauge32,
+  k3lDeviceVoipChannelClientTransactionFailure5xxCount
+                Gauge32,
+  k3lDeviceVoipChannelServerTransactionFailure5xxCount
+                Gauge32,
+  k3lDeviceVoipChannelClientTransactionFailure6xxCount
+                Gauge32,
+  k3lDeviceVoipChannelServerTransactionFailure6xxCount
+                Gauge32,
+  k3lDeviceVoipRTPStatusTransmitLastSequenceNumber
+                Gauge32,
+  k3lDeviceVoipRTPStatusTransmitPacketCount
+                Gauge32,
+  k3lDeviceVoipRTPStatusTransmitOctetCount
+                Gauge32,
+  k3lDeviceVoipRTPStatusTransmitPacketLost
+                Gauge32,
+  k3lDeviceVoipRTPStatusReceiveInitialSequenceNumber
+                Gauge32,
+  k3lDeviceVoipRTPStatusReceiveLastSequenceNumber
+                Gauge32,
+  k3lDeviceVoipRTPStatusReceivePacketCount
+                Gauge32,
+  k3lDeviceVoipRTPStatusReceiveDroppedCount
+                Gauge32,
+  k3lDeviceVoipRTPStatusReceiveLastDroppedCount
+                Gauge32
+}
+
+-- 32624.2.1.2.6.5.2.1.1
+k3lDeviceSipChannelIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceChannelIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Channel index"
+  ::= { k3lDeviceSipChannelEntry 1 }
+
+-- 32624.2.1.2.6.5.2.1.2
+k3lDeviceSipChannelStatus OBJECT-TYPE
+  SYNTAX       KhompDeviceSipChannelStatus
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Channel status"
+  ::= { k3lDeviceSipChannelEntry 2 }
+
+-- 32624.2.1.2.6.5.2.1.3
+k3lDeviceVoipProfileLocalAddress OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Local profile address"
+  ::= { k3lDeviceSipChannelEntry 3 }
+
+-- 32624.2.1.2.6.5.2.1.4
+k3lDeviceVoipProfileLocalPort OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Profile local port"
+  ::= { k3lDeviceSipChannelEntry 4 }
+
+-- 32624.2.1.2.6.5.2.1.5
+k3lDeviceVoipProfileTransportType OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Profile transport type"
+  ::= { k3lDeviceSipChannelEntry 5 }
+
+-- 32624.2.1.2.6.5.2.1.6
+k3lDeviceVoipProfileRTPAddress OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "RTP address"
+  ::= { k3lDeviceSipChannelEntry 6 }
+
+-- 32624.2.1.2.6.5.2.1.7
+k3lDeviceVoipProfileUser OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Profile user"
+  ::= { k3lDeviceSipChannelEntry 7 }
+
+-- 32624.2.1.2.6.5.2.1.8
+k3lDeviceVoipProfileAuthorizationUser OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Authorization user"
+  ::= { k3lDeviceSipChannelEntry 8 }
+
+-- 32624.2.1.2.6.5.2.1.9
+k3lDeviceVoipProfileRealm OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Profile realm"
+  ::= { k3lDeviceSipChannelEntry 9 }
+
+-- 32624.2.1.2.6.5.2.1.10
+k3lDeviceVoipProfileDomain OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Domain"
+  ::= { k3lDeviceSipChannelEntry 10 }
+
+-- 32624.2.1.2.6.5.2.1.11
+k3lDeviceVoipProfileDomainPort OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Domain port"
+  ::= { k3lDeviceSipChannelEntry 11 }
+
+-- 32624.2.1.2.6.5.2.1.12
+k3lDeviceVoipProfileProxy OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Proxy"
+  ::= { k3lDeviceSipChannelEntry 12 }
+
+-- 32624.2.1.2.6.5.2.1.13
+k3lDeviceVoipProfileProxyPort OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Proxy port"
+  ::= { k3lDeviceSipChannelEntry 13 }
+
+-- 32624.2.1.2.6.5.2.1.14
+k3lDeviceVoipProfileRegistered OBJECT-TYPE
+  SYNTAX       DisplayString
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Profile registered"
+  ::= { k3lDeviceSipChannelEntry 14 }
+
+-- 32624.2.1.2.6.5.2.1.15
+k3lDeviceVoipChannelTransactionCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Transaction Count"
+  ::= { k3lDeviceSipChannelEntry 15 }
+
+-- 32624.2.1.2.6.5.2.1.16
+k3lDeviceVoipChannelClientTransactionCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Client transaction count"
+  ::= { k3lDeviceSipChannelEntry 16 }
+
+-- 32624.2.1.2.6.5.2.1.17
+k3lDeviceVoipChannelServerTransactionCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Server transaction count"
+  ::= { k3lDeviceSipChannelEntry 17 }
+
+-- 32624.2.1.2.6.5.2.1.18
+k3lDeviceVoipChannelClientTransactionFailureCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Client transaction failure count"
+  ::= { k3lDeviceSipChannelEntry 18 }
+
+-- 32624.2.1.2.6.5.2.1.19
+k3lDeviceVoipChannelServerTransactionFailureCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Server transaction failure count"
+  ::= { k3lDeviceSipChannelEntry 19 }
+
+-- 32624.2.1.2.6.5.2.1.20
+k3lDeviceVoipChannelClientTransactionFailure4xxCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Client transaction failure 4xx count"
+  ::= { k3lDeviceSipChannelEntry 20 }
+
+-- 32624.2.1.2.6.5.2.1.21
+k3lDeviceVoipChannelServerTransactionFailure4xxCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Server transaction failure 4xx count"
+  ::= { k3lDeviceSipChannelEntry 21 }
+
+-- 32624.2.1.2.6.5.2.1.22
+k3lDeviceVoipChannelClientTransactionFailure5xxCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Client transaction failure 5xx count"
+  ::= { k3lDeviceSipChannelEntry 22 }
+
+-- 32624.2.1.2.6.5.2.1.23
+k3lDeviceVoipChannelServerTransactionFailure5xxCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Server transaction failure 5xx count"
+  ::= { k3lDeviceSipChannelEntry 23 }
+
+-- 32624.2.1.2.6.5.2.1.24
+k3lDeviceVoipChannelClientTransactionFailure6xxCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Client transaction failure 6xx count"
+  ::= { k3lDeviceSipChannelEntry 24 }
+
+-- 32624.2.1.2.6.5.2.1.25
+k3lDeviceVoipChannelServerTransactionFailure6xxCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Server transaction failure 6xx count"
+  ::= { k3lDeviceSipChannelEntry 25 }
+
+-- 32624.2.1.2.6.5.2.1.26
+k3lDeviceVoipRTPStatusTransmitLastSequenceNumber OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Transmit last sequence number"
+  ::= { k3lDeviceSipChannelEntry 26 }
+
+-- 32624.2.1.2.6.5.2.1.27
+k3lDeviceVoipRTPStatusTransmitPacketCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Transmit packet count"
+  ::= { k3lDeviceSipChannelEntry 27 }
+
+-- 32624.2.1.2.6.5.2.1.28
+k3lDeviceVoipRTPStatusTransmitOctetCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Transmit octet count"
+  ::= { k3lDeviceSipChannelEntry 28 }
+
+-- 32624.2.1.2.6.5.2.1.29
+k3lDeviceVoipRTPStatusTransmitPacketLost OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Transmit packet lost"
+  ::= { k3lDeviceSipChannelEntry 29 }
+
+-- 32624.2.1.2.6.5.2.1.30
+k3lDeviceVoipRTPStatusReceiveInitialSequenceNumber OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Receive initial sequence number"
+  ::= { k3lDeviceSipChannelEntry 30 }
+
+-- 32624.2.1.2.6.5.2.1.31
+k3lDeviceVoipRTPStatusReceiveLastSequenceNumber OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Receive last sequence number"
+  ::= { k3lDeviceSipChannelEntry 31 }
+
+-- 32624.2.1.2.6.5.2.1.32
+k3lDeviceVoipRTPStatusReceivePacketCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Receive packet count"
+  ::= { k3lDeviceSipChannelEntry 32 }
+
+-- 32624.2.1.2.6.5.2.1.33
+k3lDeviceVoipRTPStatusReceiveDroppedCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Receive dropped count"
+  ::= { k3lDeviceSipChannelEntry 33 }
+
+-- 32624.2.1.2.6.5.2.1.34
+k3lDeviceVoipRTPStatusReceiveLastDroppedCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Receive last dropped count"
+  ::= { k3lDeviceSipChannelEntry 34 }
+
+-- 32624.2.1.2.7
+k3lDeviceChannelGroupChannel OBJECT IDENTIFIER ::= { k3lDevice 7 }
+
+-- 32624.2.1.2.7.1
+k3lDeviceChannelGroupTable OBJECT-TYPE
+  SYNTAX       SEQUENCE OF K3lDeviceChannelGroupEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Devices table (conceptual)"
+  ::= { k3lDeviceChannelGroupChannel 1 }
+
+-- 32624.2.1.2.7.1.1
+k3lDeviceChannelGroupEntry OBJECT-TYPE
+  SYNTAX       K3lDeviceChannelGroupEntry
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Device entry inside k3lDeviceChannelGroupTable (conceptual row)"
+  INDEX        { k3lDeviceSerial, k3lDeviceChannelGroupIndex }
+  ::= { k3lDeviceChannelGroupTable 1 }
+
+K3lDeviceChannelGroupEntry ::= SEQUENCE {
+  k3lDeviceChannelGroupIndex KhompDeviceIndex,
+  k3lDeviceChannelGroupType  Unsigned32,
+  k3lDeviceChannelGroupFirstChannel
+                       Unsigned32,
+  k3lDeviceChannelGroupChannelCount
+                       Gauge32,
+  k3lDeviceChannelGroupChannelIdle
+                       Gauge32,
+  k3lDeviceChannelGroupChannelFail
+                       Gauge32,
+  k3lDeviceChannelGroupChannelBusy
+                       Gauge32
+}
+
+-- 32624.2.1.2.7.1.1.1
+k3lDeviceChannelGroupIndex OBJECT-TYPE
+  SYNTAX       KhompDeviceIndex
+  MAX-ACCESS   not-accessible
+  STATUS       current
+  DESCRIPTION  "Total devices channels group"
+  ::= { k3lDeviceChannelGroupEntry 1 }
+
+-- 32624.2.1.2.7.1.1.2
+k3lDeviceChannelGroupType OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Type devices channels group"
+  ::= { k3lDeviceChannelGroupEntry 2 }
+
+-- 32624.2.1.2.7.1.1.3
+k3lDeviceChannelGroupFirstChannel OBJECT-TYPE
+  SYNTAX       Unsigned32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Fist Channel in the channels group"
+  ::= { k3lDeviceChannelGroupEntry 3 }
+
+-- 32624.2.1.2.7.1.1.4
+k3lDeviceChannelGroupChannelCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total devices channels group"
+  ::= { k3lDeviceChannelGroupEntry 4 }
+
+-- 32624.2.1.2.7.1.1.5
+k3lDeviceChannelGroupChannelIdle OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total available devices channels group"
+  ::= { k3lDeviceChannelGroupEntry 5 }
+
+-- 32624.2.1.2.7.1.1.6
+k3lDeviceChannelGroupChannelFail OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total FAIL devices channels group"
+  ::= { k3lDeviceChannelGroupEntry 6 }
+
+-- 32624.2.1.2.7.1.1.7
+k3lDeviceChannelGroupChannelBusy OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total BUSY devices channels group"
+  ::= { k3lDeviceChannelGroupEntry 7 }
+
+--32624.2.1.3
+k3lConsolidated OBJECT IDENTIFIER ::= { k3lMIBObjects 3 }
+
+--32624.2.1.3.1
+k3lConsolidatedDevices OBJECT IDENTIFIER ::= { k3lConsolidated 1 }
+
+-- 32624.2.1.3.1.1
+k3lConsolidatedDevicesChannelCount OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total devices channels"
+  ::= { k3lConsolidatedDevices 1 }
+
+-- 32624.2.1.3.1.2
+k3lConsolidatedDevicesChannelCountEnabled OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total available devices channels"
+  ::= { k3lConsolidatedDevices 2 }
+
+-- 32624.2.1.3.1.3
+k3lConsolidatedDevicesChannelCountIdle OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total IDLE devices channels"
+  ::= { k3lConsolidatedDevices 3 }
+
+-- 32624.2.1.3.1.4
+k3lConsolidatedDevicesChannelCountFail OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total FAIL devices channels"
+  ::= { k3lConsolidatedDevices 4 }
+
+-- 32624.2.1.3.1.5
+k3lConsolidatedDevicesChannelCountBusy OBJECT-TYPE
+  SYNTAX       Gauge32
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "Total BUSY devices channels"
+  ::= { k3lConsolidatedDevices 5 }
+
+--32624.2.1.4
+k3lConfiguration OBJECT IDENTIFIER ::= { k3lMIBObjects 4 }
+
+--32624.2.1.4.1
+k3lConfigurationR2Country OBJECT-TYPE
+  SYNTAX       KhompR2Country
+  MAX-ACCESS   read-only
+  STATUS       current
+  DESCRIPTION  "R2 Country"
+  ::= { k3lConfiguration 1 }
+
+--
+-- CONFORMANCE
+--
+
+-- 32624.2.2
+k3lMIBConformance OBJECT IDENTIFIER ::= { k3l 2 }
+
+--
+-- COMPLIANCES
+--
+
+-- 32624.2.2.1
+k3lMIBCompliances OBJECT IDENTIFIER ::= { k3lMIBConformance 1 }
+
+-- 32624.2.2.1.1
+k3lFullCompliance MODULE-COMPLIANCE
+  STATUS       current
+  DESCRIPTION  "SNMP entities that are implemented by this module"
+  MODULE       -- this module
+    MANDATORY-GROUPS { k3lRootGroup, k3lDeviceGroup, k3lDeviceLinkGroup,
+                     k3lDeviceHILinkGroup, k3lDeviceChannelGroup,
+                     k3lDeviceE1ChannelGroup, k3lDeviceFxoChannelGroup,
+                     k3lDeviceFxsChannelGroup, k3lDeviceGsmChannelGroup,
+                     k3lDeviceSipChannelGroup, k3lDeviceGsmCallGroup,
+                     k3lConsolidatedDevicesGroup, k3lDeviceChannelGroupGroup,
+                     k3lConfigurationGroup }
+  ::= { k3lMIBCompliances 1 }
+
+--
+-- GROUPS
+--
+
+-- 32624.2.2.2
+k3lMIBGroups OBJECT IDENTIFIER ::= { k3lMIBConformance 2 }
+
+-- 32624.2.2.2.1
+k3lRootGroup OBJECT-GROUP
+  OBJECTS      { k3lVersionMajor, k3lVersionMinor, k3lVersionBuild,
+               k3lVersionRevision, k3lVersionString, k3lDeviceCount }
+  STATUS       current
+  DESCRIPTION  "K3L root objects"
+  ::= { k3lMIBGroups 1 }
+
+-- 32624.2.2.2.2
+k3lDeviceGroups OBJECT IDENTIFIER ::= { k3lMIBGroups 2 }
+
+-- 32624.2.2.2.2.1
+k3lDeviceGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceSerial, k3lDeviceIndex, k3lDeviceDescr,
+                 k3lDeviceModel, k3lDeviceOperStatus, k3lDeviceType,
+                 k3lDeviceLinkCount, k3lDeviceChannelCount,
+                 k3lDeviceChannelCountEnabled, k3lDeviceChannelCountIdle,
+                 k3lDeviceChannelCountFail, k3lDeviceChannelCountBusy,
+                 k3lDeviceReset, k3lDeviceChannelGroupCount,
+                 k3lDeviceStatsIncoming, k3lDeviceStatsOutgoing,
+                 k3lDeviceOutgoingCompleted, k3lDeviceOutgoingError,
+                 k3lDeviceRemoteDisconnect, k3lDeviceLocalDisconnect,
+                 k3lDeviceCallFailBusy, k3lDeviceCallFailNoAnswer,
+                 k3lDeviceCallFailRejected, k3lDeviceCallFailChangedNumber,
+                 k3lDeviceCallFailInvalidNumber, k3lDeviceCallFailOutOfService,
+                 k3lDeviceCallFailCongestion, k3lDeviceCallFailNetworkFailure,
+                 k3lDeviceCallFailOther, k3lDeviceEbsIP
+               }
+
+  STATUS       current
+  DESCRIPTION  "K3L device objects"
+  ::= { k3lDeviceGroups 1 }
+
+-- 32624.2.2.2.3
+k3lDeviceLinkGroups OBJECT IDENTIFIER ::= { k3lMIBGroups 3 }
+
+-- 32624.2.2.2.3.1
+k3lDeviceLinkGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceLinkOperStatus, k3lDeviceLinkSignaling,
+               k3lDeviceLinkDescr, k3lDeviceLinkAlarm,
+               k3lDeviceLinkErrorCountChangesToLock,
+               k3lDeviceLinkErrorCountLostOfSignal,
+               k3lDeviceLinkErrorCountAlarmNotification,
+               k3lDeviceLinkErrorCountLostOfFrame,
+               k3lDeviceLinkErrorCountLostOfMultiframe,
+               k3lDeviceLinkErrorCountRemoteAlarm,
+               k3lDeviceLinkErrorCountSlipAlarm, k3lDeviceLinkErrorCountPRBS,
+               k3lDeviceLinkErrorCountWrongEBits,
+               k3lDeviceLinkErrorCountJitterVariation,
+               k3lDeviceLinkErrorCountFramesWithoutSync,
+               k3lDeviceLinkErrorCountMultiframeSignal,
+               k3lDeviceLinkErrorCountFrameError,
+               k3lDeviceLinkErrorCountBipolarViolation,
+               k3lDeviceLinkErrorCountCRC4, k3lDeviceLinkReset,
+               k3lDeviceLinkResetErrorCount, k3lDeviceLinkBlock,
+               k3lDeviceLinkChannelCount, k3lDeviceLinkChannelCountEnabled,
+               k3lDeviceLinkChannelCountIdle, k3lDeviceLinkChannelCountFail,
+               k3lDeviceLinkChannelCountBusy, k3lDeviceLinkReceivingClock,
+               k3lDeviceLinkStatsIncoming, k3lDeviceLinkStatsOutgoing,
+               k3lDeviceLinkOutgoingCompleted, k3lDeviceLinkOutgoingError,
+               k3lDeviceLinkRemoteDisconnect, k3lDeviceLinkLocalDisconnect,
+               k3lDeviceLinkCallFailBusy, k3lDeviceLinkCallFailNoAnswer,
+               k3lDeviceLinkCallFailRejected,
+               k3lDeviceLinkCallFailChangedNumber,
+               k3lDeviceLinkCallFailInvalidNumber,
+               k3lDeviceLinkCallFailOutOfService,
+               k3lDeviceLinkCallFailCongestion,
+               k3lDeviceLinkCallFailNetworkFailure, k3lDeviceLinkCallFailOther,
+               k3lDeviceLinkOperatingMode
+               }
+  STATUS       current
+  DESCRIPTION  "K3L device link objects"
+  ::= { k3lDeviceLinkGroups 1 }
+
+-- 32624.2.2.2.3.2
+k3lDeviceHILinkGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceHILinkOperStatus, k3lDeviceHILinkAlarm }
+  STATUS       current
+  DESCRIPTION  "K3L device HI link objects"
+  ::= { k3lDeviceLinkGroups 2 }
+
+-- 32624.2.2.2.4
+k3lDeviceChannelGroups OBJECT IDENTIFIER ::= { k3lMIBGroups 4 }
+
+-- 32624.2.2.2.4.1
+k3lDeviceChannelGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceChannelSignaling, k3lDeviceChannelCallStatus,
+               k3lDeviceChannelAudioStatus, k3lDeviceChannelEnabledFeatures,
+               k3lDeviceChannelStatsIncoming, k3lDeviceChannelStatsOutgoing,
+               k3lDeviceChannelStatsOutgoingCompleted,
+               k3lDeviceChannelStatsOutgoingError,
+               k3lDeviceChannelStatsRemoteDisconnect,
+               k3lDeviceChannelStatsLocalDisconnect,
+               k3lDeviceChannelStatsCallFailBusy,
+               k3lDeviceChannelStatsCallFailNoAnswer,
+               k3lDeviceChannelStatsCallFailRejected,
+               k3lDeviceChannelStatsCallFailChangedNumber,
+               k3lDeviceChannelStatsCallFailInvalidNumber,
+               k3lDeviceChannelStatsCallFailOutOfService,
+               k3lDeviceChannelStatsCallFailCongestion,
+               k3lDeviceChannelStatsCallFailNetworkFailure,
+               k3lDeviceChannelStatsCallFailOther, k3lDeviceChannelDestinationAddress,
+               k3lDeviceChannelCallDuration, k3lDeviceChannelRecording,
+               k3lDeviceChannelAverageCallTime, k3lDeviceChannelOriginAddress,
+               k3lDeviceChannelCadenceStatus }
+  STATUS       current
+  DESCRIPTION  "K3L device channel objects"
+  ::= { k3lDeviceChannelGroups 1 }
+
+-- 32624.2.2.2.4.2
+k3lDeviceE1ChannelGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceE1ChannelCount, k3lDeviceE1ChannelStatus }
+  STATUS       current
+  DESCRIPTION  "K3L device E1 channel extended information objects"
+  ::= { k3lDeviceChannelGroups 2 }
+
+-- 32624.2.2.2.4.3
+k3lDeviceFxoChannelGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceFxoChannelCount, k3lDeviceFxoChannelStatus }
+  STATUS       current
+  DESCRIPTION  "K3L device FXO channel extended information objects"
+  ::= { k3lDeviceChannelGroups 3 }
+
+-- 32624.2.2.2.4.4
+k3lDeviceFxsChannelGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceFxsChannelCount, k3lDeviceFxsChannelStatus }
+  STATUS       current
+  DESCRIPTION  "K3L device FXS channel extended information objects"
+  ::= { k3lDeviceChannelGroups 4 }
+
+-- 32624.2.2.2.4.5
+k3lDeviceGsmChannelGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceGsmChannelCount, k3lDeviceGsmChannelStatus,
+               k3lDeviceGsmChannelSignalStrength, k3lDeviceGsmChannelErrorRate,
+               k3lDeviceGsmChannelRegistryStatus, k3lDeviceGsmChannelOperName,
+               k3lDeviceGsmChannelUnreadSmsMessages,
+               k3lDeviceGsmChannelEnabledFeatures, k3lDeviceGsmChannelImei,
+               k3lDeviceGsmChannelSim, k3lDeviceGsmChannelImsi,
+               k3lDeviceGsmChannelIccid, k3lDeviceGsmChannelMsisdn,
+               k3lDeviceGsmChannelCallWaiting, k3lDeviceGsmChannelSimCardCount}
+  STATUS       current
+  DESCRIPTION  "K3L device GSM channel extended information objects"
+  ::= { k3lDeviceChannelGroups 5 }
+
+-- 32624.2.2.2.4.6
+k3lDeviceSipChannelGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceSipChannelCount, k3lDeviceSipChannelStatus, k3lDeviceVoipProfileLocalAddress,
+                 k3lDeviceVoipProfileLocalPort, k3lDeviceVoipProfileTransportType, k3lDeviceVoipProfileRTPAddress,
+                 k3lDeviceVoipProfileUser, k3lDeviceVoipProfileAuthorizationUser,
+                 k3lDeviceVoipProfileRealm, k3lDeviceVoipProfileDomain,
+                 k3lDeviceVoipProfileDomainPort, k3lDeviceVoipProfileProxy, k3lDeviceVoipProfileProxyPort,
+                 k3lDeviceVoipProfileRegistered, k3lDeviceVoipChannelTransactionCount,
+                 k3lDeviceVoipChannelClientTransactionCount, k3lDeviceVoipChannelServerTransactionCount,
+                 k3lDeviceVoipChannelClientTransactionFailureCount, k3lDeviceVoipChannelServerTransactionFailureCount,
+                 k3lDeviceVoipChannelClientTransactionFailure4xxCount, k3lDeviceVoipChannelServerTransactionFailure4xxCount,
+                 k3lDeviceVoipChannelClientTransactionFailure5xxCount, k3lDeviceVoipChannelServerTransactionFailure5xxCount,
+                 k3lDeviceVoipChannelClientTransactionFailure6xxCount, k3lDeviceVoipChannelServerTransactionFailure6xxCount,
+                 k3lDeviceVoipRTPStatusTransmitLastSequenceNumber, k3lDeviceVoipRTPStatusTransmitPacketCount,
+                 k3lDeviceVoipRTPStatusTransmitOctetCount, k3lDeviceVoipRTPStatusTransmitPacketLost,
+                 k3lDeviceVoipRTPStatusReceiveInitialSequenceNumber, k3lDeviceVoipRTPStatusReceiveLastSequenceNumber,
+                 k3lDeviceVoipRTPStatusReceivePacketCount, k3lDeviceVoipRTPStatusReceiveDroppedCount,k3lDeviceVoipRTPStatusReceiveLastDroppedCount}
+  STATUS       current
+  DESCRIPTION  "K3L device SIP channel extended information objects"
+  ::= { k3lDeviceChannelGroups 6 }
+
+-- 32624.2.2.2.4.7
+k3lDeviceChannelGroupGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceChannelGroupType, k3lDeviceChannelGroupFirstChannel,
+               k3lDeviceChannelGroupChannelCount, k3lDeviceChannelGroupChannelIdle,
+               k3lDeviceChannelGroupChannelFail, k3lDeviceChannelGroupChannelBusy }
+  STATUS       current
+  DESCRIPTION  "K3L device channel groups extended information objects"
+  ::= { k3lDeviceChannelGroups 7 }
+
+
+-- 32624.2.2.2.5
+k3lDeviceCallInfoGroups OBJECT IDENTIFIER ::= { k3lMIBGroups 5 }
+
+-- 32624.2.2.2.5.1
+k3lDeviceGsmCallGroup OBJECT-GROUP
+  OBJECTS      { k3lDeviceGsmCallStatus, k3lDeviceGsmCallMode,
+               k3lDeviceGsmCallNumber, k3lDeviceGsmCallFlags }
+  STATUS       current
+  DESCRIPTION  "GSM call objects"
+  ::= { k3lDeviceCallInfoGroups 1 }
+
+--32624.2.2.2.6
+k3lConsolidatedGroups OBJECT IDENTIFIER ::= { k3lMIBGroups 6 }
+
+-- 32624.2.2.2.6.1
+k3lConsolidatedDevicesGroup OBJECT-GROUP
+  OBJECTS      { k3lConsolidatedDevicesChannelCount,
+               k3lConsolidatedDevicesChannelCountEnabled,
+               k3lConsolidatedDevicesChannelCountIdle,
+               k3lConsolidatedDevicesChannelCountFail,
+               k3lConsolidatedDevicesChannelCountBusy
+               }
+  STATUS       current
+  DESCRIPTION  "K3L consolidated devices objects"
+  ::= { k3lConsolidatedGroups 1 }
+
+-- 32624.2.2.2.7
+k3lConfigurationGroup OBJECT-GROUP
+  OBJECTS      { k3lConfigurationR2Country }
+  STATUS       current
+  DESCRIPTION  "K3L configuration objects"
+  ::= { k3lMIBGroups 7 }
+
+END
