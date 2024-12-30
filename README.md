@@ -2,7 +2,7 @@
 
 Templates Zabbix para monitoramento SNMP do Asterisk e Khomp EBS  
 
-Estado: Em produção  
+Estado: Em produção   
 Data: 2021227  
 
 (c) Copyright 2024, Ultrix  
